@@ -61,7 +61,11 @@ const Login = () => {
                             id="email"
                             type="email"
                             placeholder="Email"
-                            value={email}
+                            value={email}  // this is important if u dont put it here upon refresh u will simply u will use email between tiuggers  render
+                            // dont forget render and refresh are different it just changes virtual dom and then changes original dom using minimal changes
+
+                            // no refresh even without react even when u change dom directly
+                            
                             onChange={(e) => setEmail(e.target.value)}
                             required  // Prevents empty email
                             pattern=".+@[gG][mM][aA][iI][lL]\.com" // Restricts to Gmail only

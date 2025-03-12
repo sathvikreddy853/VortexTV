@@ -98,13 +98,13 @@ const authController = {
             const user = await User.findByEmail(email);
 
             if (!user) {
-                return res.status(404).json({ message: "User not found" });
+                return res.status(404).json({ message: "User not found" }); // code 404 means it is negative result
             }
 
-            // No reset token or expiry in the database (as requested)
-            // We'll just send a success message to the frontend
+            //by default respons eis 200
 
-            res.json({ message: "User found. Proceed to reset password." });
+
+            res.json({ message: "User found. Proceed to reset password." });  
         } catch (error) {
             console.error("Error during forgot password:", error);
             res.status(500).json({ message: "Internal server error" });

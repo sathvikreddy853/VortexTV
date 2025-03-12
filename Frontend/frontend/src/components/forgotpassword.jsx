@@ -22,7 +22,7 @@ const ForgotPassword = () => {
             });
 
             const data = await response.json();
-
+                // for succes i am not using data.message. so it seems a bit redundant but its not a big deal
             if (response.ok) {
                 navigate(`/set-password/${email}`); // Redirect with email
             } else {
@@ -34,6 +34,8 @@ const ForgotPassword = () => {
         }
     };
 
+
+    //components from dev ui  (website for components)  https://devui.io/  css is changed because minimal css is enough
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded shadow-md w-96">
