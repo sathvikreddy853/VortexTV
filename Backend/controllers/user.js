@@ -13,8 +13,12 @@ const userController = {
                     email,
                     password
                     } = req.body;  // object destsructuring
+
+            // encrypting password to store hashed password.
+
+
             const hashedPassword = await bcrypt.hash(password, 10);
-            const newUser = await User.create(name, email, hashedPassword);
+            const newUser = await User.create(name, email, hashedPassword);   // creating new user using user model ,new user is a json object (that is promise resolved)
             res.status(201).json(newUser);
         } 
 

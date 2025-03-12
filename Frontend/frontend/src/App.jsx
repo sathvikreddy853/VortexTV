@@ -7,6 +7,9 @@ import SignUp from './components/SignUp';
 import BlankPage from './components/BlankPage';
 import SecurityLayer from './components/Extralayer';
 import Login from './components/Login';
+import ForgotPassword from './components/forgotpassword';
+import SetPassword from './components/setpasword';
+import NotFound from './components/NotFound';
 
 // let isAllowed = localStorage.getItem("token") !== null; // Check if token exists
 
@@ -22,12 +25,15 @@ function App() {
   return (
     <Router>
       <Routes>
-          <Route path="/" element={<Login  />} />
+          <Route path="/" element={<Login  />} />  
+          {/* dont forget u need to change / to h0me and login to /login dont forget to change / to /login wherever u used */}
           <Route path="/signup" element={<SignUp  />} />
+          <Route path="/forgot-password" element={<ForgotPassword  />} />
+          <Route path="/set-password/:email" element={<SetPassword  />} />
           <Route element={<SecurityLayer  />}>
             <Route path="/page" element={<BlankPage />} />
           </Route>
-
+          {/* <Route path="*" element={<NotFound />} /> Catch-all route */}
       </Routes>
     </Router>
   );

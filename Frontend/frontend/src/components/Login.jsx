@@ -90,9 +90,12 @@ const Login = () => {
                             Enter
                         </button>
                     </div>
-                    <div className="mt-4 text-center">
+                    <div className="mt-4 flex flex-col items-center space-y-2">
                         <Link to="/signup" className="text-blue-500 hover:underline">
-                            Create Account
+                            Signup
+                        </Link>
+                        <Link to="/forgot-password" className="text-blue-500 hover:underline">
+                            Forgot Password
                         </Link>
                     </div>
                 </form>

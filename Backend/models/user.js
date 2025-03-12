@@ -44,23 +44,26 @@ const User = {
     },
 
     // Update user password
-    updatePassword: async (userId, passwordHash) => 
-    {
+    updatePassword: async (userId, passwordHash) => {
         try {
             const [result] = await pool.execute(
                 'UPDATE Users SET password_hash = ? WHERE user_id = ?',
                 [passwordHash, userId]
             );
-            return result.affectedRows;
+            return result.affectedRows;   // generally present in result 
         } catch (error) {
             console.error('Error updating password:', error);
             throw error;
         }
+
+        // When you execute an UPDATE query in MySQL using pool.execute(), the result is typically an array where the first element 
+        // (result) contains an object with metadata about the query execution. This object includes various properties, and one of the
+        //  most important ones is affectedRows.
+
     },
 
     // Delete user by user_id
-    deleteById: async (userId) => 
-    {
+    deleteById: async (userId) => {
         try {
             const [result] = await pool.execute(
                 'DELETE FROM Users WHERE user_id = ?',
@@ -74,8 +77,7 @@ const User = {
     },
 
     // Update user email
-    updateEmail: async (userId, email) => 
-    {
+    updateEmail: async (userId, email) => {
         try {
             const [result] = await pool.execute(
                 'UPDATE Users SET email = ? WHERE user_id = ?',
@@ -89,8 +91,7 @@ const User = {
     },
 
     // Update user name
-    updateName: async (userId, name) => 
-    {
+    updateName: async (userId, name) => {
         try {
             const [result] = await pool.execute(
                 'UPDATE Users SET name = ? WHERE user_id = ?',
@@ -104,8 +105,7 @@ const User = {
     },
 
     //Delete user by name and email.
-    deleteByNameAndEmail: async (name, email) => 
-    {
+    deleteByNameAndEmail: async (name, email) => {
         try {
             const user = await User.findByNameAndEmail(name, email);
             if (user) {
@@ -120,8 +120,7 @@ const User = {
     },
 
     //helper function to find user by name and email
-    findByNameAndEmail: async (name, email) => 
-    {
+    findByNameAndEmail: async (name, email) => {
         try {
             const [rows] = await pool.execute(
                 'SELECT * FROM Users WHERE name = ? AND email = ?',
@@ -133,5 +132,9 @@ const User = {
             throw error;
         }
     },
+
+
+
+
 };
 export default User
