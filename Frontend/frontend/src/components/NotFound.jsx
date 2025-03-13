@@ -9,7 +9,7 @@ const NotFound = () => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        navigate('/'); // Redirect to login after logout  dont forget to cahnge / to /login later when routes ar efinalised
+        navigate('/login'); // Redirect to login after logout  dont forget to cahnge / to /login later when routes ar efinalised
     };
 
     return (

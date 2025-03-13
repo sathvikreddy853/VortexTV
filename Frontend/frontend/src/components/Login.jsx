@@ -1,7 +1,6 @@
-// Login.jsx
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Navbar1 from './Navbar1';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -14,95 +13,98 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:3000/auth/login', 
-                {
-                    method: 'POST',
-                    headers: 
-                    {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                }
-            );
+            const response = await fetch('http://localhost:3000/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
 
             const data = await response.json();
 
-            if (response.ok) 
+            if (response.ok) // based on http response codes 200 then ok is true 
             {
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user)); // Store user data
-                console.log(JSON.stringify(data.user))
+                localStorage.setItem('user', JSON.stringify(data.user));
+                console.log(JSON.stringify(data.user));
                 navigate('/page');
             } 
             else 
             {
                 setError(data.message || 'Login failed');
             }
-        } 
-        catch (err) 
-        {
+        } catch (err) {
             setError('Network error. Please try again.');
             console.error(err);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-8 rounded shadow-md w-96">
-                <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
-                {error && <div className="text-red-500 mb-4">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="email"
-                            type="email"
-                            placeholder="Email"
-                            value={email}  // this is important if u dont put it here upon refresh u will simply u will use email between tiuggers  render
-                            // dont forget render and refresh are different it just changes virtual dom and then changes original dom using minimal changes
+        <div className="min-h-screen flex flex-col">
+            <Navbar1 /> 
 
-                            // no refresh even without react even when u change dom directly
-                            
-                            onChange={(e) => setEmail(e.target.value)}
-                            required  // Prevents empty email
-                            pattern=".+@[gG][mM][aA][iI][lL]\.com" // Restricts to Gmail only
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                            Password
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="password"
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength="3"
-                        />
-                    </div>
-                    <div className="flex items-center justify-between">
+                {/* helps in gradient picking */}
+
+                {/* https://gradienty.codes/tailwind-gradient-background */}
+
+
+            <div className="flex items-center justify-center flex-grow bg-gradient-to-br from-blue-900 via-gray-900 to-black">
+                <div className="bg-white p-8 rounded-xl shadow-lg w-96">
+                    <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Welcome Back</h2>
+                    {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                                Email
+                            </label>
+
+                            {/* https://webcode.tools/html-generator */} 
+                            {/* used for html buttons and html structure */}
+
+
+                                <input
+                                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200 ease-in-out"
+                                    id="email"
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    pattern=".+@[gG][mM][aA][iI][lL]\.com"
+                                />
+                        </div>
+                        <div className="mb-6">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                                Password
+                            </label>
+                                <input
+                                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200 ease-in-out"
+                                    id="password"
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    minLength="3"
+                                />
+                        </div>
                         <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out shadow-md"
                             type="submit"
                         >
-                            Enter
+                            Login
                         </button>
-                    </div>
-                    <div className="mt-4 flex flex-col items-center space-y-2">
-                        <Link to="/signup" className="text-blue-500 hover:underline">
-                            Signup
-                        </Link>
-                        <Link to="/forgot-password" className="text-blue-500 hover:underline">
-                            Forgot Password
-                        </Link>
-                    </div>
-                </form>
+                        <div className="mt-4 flex flex-col items-center space-y-2">
+                            <Link to="/signup" className="text-blue-400 hover:text-blue-500 transition">
+                                Signup
+                            </Link> 
+                            <Link to="/forgot-password" className="text-blue-400 hover:text-blue-500 transition">
+                                Forgot Password?
+                            </Link>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

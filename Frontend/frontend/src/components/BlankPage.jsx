@@ -4,13 +4,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const BlankPage = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem('user')); // it  wassent in json format by backend 
     const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem('token'); // Remove token
         localStorage.removeItem('user'); // remove user data
-        navigate('/'); // Redirect to login page
+        navigate('/login'); // Redirect to login page
     };
 
     return (

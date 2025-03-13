@@ -29,7 +29,7 @@ const SetPassword = () => {
             if (response.ok) {
                 setMessage(data.message);
                 setTimeout(() => {
-                    navigate('/');   // should be later changed to /login
+                    navigate('/login');   // should be later changed to /login
                 }, 2000); // Redirect after 2 seconds
             } else {
                 setError(data.message || 'Password reset failed');
