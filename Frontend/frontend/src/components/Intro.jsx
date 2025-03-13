@@ -33,7 +33,6 @@ const Intro = () => {
     return (
         // used colorpicker website for good gradient for a 
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white">
-            <Navbar1 />
             <div className="flex flex-col items-center justify-center h-screen">
                 <h1 className={`text-6xl font-extrabold transition-all duration-500 ease-in-out ${isVisible ? 'animate-glow' : '' }`}>
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">

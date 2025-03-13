@@ -1,8 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const SecurityLayer = () => {
-    // / is signup
-    return localStorage.getItem("token")!==null ? <Outlet /> : <Navigate to="/" />;
+// const SecurityLayer = () => {
+//     // / is signup
+//     return localStorage.getItem("token")!==null ? <Outlet /> : <Navigate to="/" />;
+// };
+
+
+const SecurityLayer = ({ children }) => {
+    const isAuthenticated = localStorage.getItem("token"); 
+    return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 export default SecurityLayer

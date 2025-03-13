@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import Navbar1 from './Navbar1';
 
 const Login = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -28,7 +30,7 @@ const Login = () => {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 console.log(JSON.stringify(data.user));
-                navigate('/page');
+                navigate('/dashboard');
             } 
             else 
             {
@@ -42,7 +44,6 @@ const Login = () => {
 
     return (
         <div className="min-h-screen flex flex-col">
-            <Navbar1 /> 
 
                 {/* helps in gradient picking */}
 
