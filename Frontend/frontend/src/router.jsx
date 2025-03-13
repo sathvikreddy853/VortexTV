@@ -14,7 +14,7 @@ import { createBrowserRouter,  Outlet} from "react-router-dom";
 import Watchlist from "./components/DashBoard/watchlist"
 import  Profile  from "./components/DashBoard/Profile";
 import DefaultMovies from "./components/DashBoard/DefaultMovies";
-
+import PasswordChangeForm from "./components/DashBoard/changePassword";
 const UnrestrictedLayout = () => {
     return (
         <div>
@@ -23,6 +23,13 @@ const UnrestrictedLayout = () => {
         </div>
     );
 };
+
+const SecuredLayer =() => {
+   
+    return(<SecurityLayer>
+        <Outlet/>
+    </SecurityLayer>)
+}
 
 
 
@@ -50,15 +57,18 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
             <SecurityLayer>
-               <Home/>
+                <Home/>
             </SecurityLayer>
         ),
         children: [
             { index: true, element: <DefaultMovies /> }, 
             { path: "watchlist", element: <Watchlist /> },
-            { path: "profile", element: <Profile /> }
+            { path: "profile", element: <Profile />   },
+            {path: "profile/settings",element:<PasswordChangeForm/>}
         ],
-    }
+    },
+   
+    
 ]);
 
 export default router
