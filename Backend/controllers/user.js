@@ -129,7 +129,9 @@ const userController = {
             const {
                 email
             } = req.body;
+
             const affectedRows = await User.updateEmail(req.params.id, email);
+            
             if (affectedRows > 0) {
                 res.json({
                     message: 'Email updated successfully'
@@ -170,6 +172,50 @@ const userController = {
             });
         }
     },
+
+
+    updateUserNameByEmail: async (req, res) => 
+    {
+        try 
+        {
+            const { name ,email} = req.body;
+    
+            if (!name || name.trim() === "") 
+            {
+                return res.status(400).json({ message: "New name is required" });
+            }
+    
+            const user = await User.findByEmail(email);
+            console.log(email)
+    
+            if (user) 
+            {
+                const affectedRows = await User.updateName(user.user_id, name);
+    
+                if (affectedRows > 0) 
+                {
+                    return res.json({ message: "Name updated successfully" });//default status 200
+                } else 
+                {
+                    return res.status(400).json({ message: "No changes made, name might be the same" });
+                }
+            }
+            else
+            {
+                console.log("User not found");
+                return res.status(404).json({ message: "User not found" });
+            }
+            
+        } catch (error) 
+        {
+            console.error("Error updating name by email:", error);
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    },
+    
+
+
+
 
     deleteUserByNameAndEmail: async (req, res) => 
     {

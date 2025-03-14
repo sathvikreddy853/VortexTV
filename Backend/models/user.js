@@ -131,8 +131,22 @@ const User = {
             console.error('Error finding user by name and email:', error);
             throw error;
         }
+
+
     },
 
+    IsUserPresent: async (user_id, email) => {
+        try {
+            const [rows] = await pool.execute(
+                "SELECT * FROM Users WHERE user_id = ? AND email = ?",
+                [user_id, email]
+            );
+            return rows.length > 0; // Returns true if user exists, false otherwise
+        } catch (error) {
+            console.error("Error checking if user exists:", error);
+            throw error;
+        }
+    }
 
 
 

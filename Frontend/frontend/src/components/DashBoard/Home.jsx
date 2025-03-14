@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-
 const Home = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const location = useLocation();
@@ -22,6 +21,7 @@ const Home = () => {
                 <NavLink to="/dashboard" label="Home" location={location} />
                 <NavLink to="/dashboard/profile" label="Profile" location={location} />
                 <NavLink to="/dashboard/watchlist" label="Watchlist" location={location} />
+                <NavLink   to="/dashboard/planspage" label="plans" location={location} />
             </nav>
         </div>
     

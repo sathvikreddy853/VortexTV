@@ -15,6 +15,8 @@ import Watchlist from "./components/DashBoard/watchlist"
 import  Profile  from "./components/DashBoard/Profile";
 import DefaultMovies from "./components/DashBoard/DefaultMovies";
 import PasswordChangeForm from "./components/DashBoard/changePassword";
+import ChangeUsernameForm from "./components/DashBoard/changeusernameform";
+import PlansPage from "./components/DashBoard/planandsunscription";
 const UnrestrictedLayout = () => {
     return (
         <div>
@@ -64,7 +66,9 @@ const router = createBrowserRouter([
             { index: true, element: <DefaultMovies /> }, 
             { path: "watchlist", element: <Watchlist /> },
             { path: "profile", element: <Profile />   },
-            {path: "profile/settings",element:<PasswordChangeForm/>}
+            {path: "profile/changepassword",element:<PasswordChangeForm/>},
+            {path:"profile/changeusername",element:<ChangeUsernameForm/>},
+            {path:"planspage",element:<PlansPage/>},
         ],
     },
    

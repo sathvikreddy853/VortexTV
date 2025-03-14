@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRouter.js";
 import authRoutes from "./routes/authRouter.js";
+import subscriptionRoutes from "./routes/subscriptionRouter.js";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use('/users', userRoutes);
 app.use('/auth',authRoutes);
+app.use('/subscription',subscriptionRoutes);
 
 
 

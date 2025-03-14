@@ -9,32 +9,27 @@ const authController = {
         try {
             const { name, email, password } = req.body;
 
-            // Check if user with the given email already exists
             const existingUser = await User.findByEmail(email);
             if (existingUser) {
                 return res.status(400).json({
                     message: "Email already exists",
                 });
-            }
+            }   
 
-            // Hash the password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Create the new user
             const newUser = await User.create(name, email, hashedPassword);
 
-            // Generate a JWT for the new user
             const token = jwt.sign(
                 {
                     userId: newUser.user_id,
                 },
                 "your-secret-key",
                 {
-                    expiresIn: "1h",
+                    expiresIn: "7d",
                 }
             );
 
-            // Return the token and user details to the frontend
             res.status(201).json({
                 token,
                 user: {
@@ -42,7 +37,7 @@ const authController = {
                     name: newUser.name,
                     email: newUser.email,
                 },
-            }); //Include user details.
+            }); 
         } catch (error) {
             console.error("Error during signup:", error);
             res.status(500).json({
@@ -73,17 +68,18 @@ const authController = {
                 },
                 "your-secret-key",
                 {
-                    expiresIn: "1h",
+                    expiresIn: "7d",
                 }
             );
             res.json({
                 token,
-                user: {
+                user: 
+                {
                     user_id: user.user_id,
                     name: user.name,
                     email: user.email,
                 },
-            }); // Include user details.
+            }); 
         } catch (error) {
             console.error("Error during login:", error);
             res.status(500).json({

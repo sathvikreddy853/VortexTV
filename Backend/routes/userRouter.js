@@ -50,4 +50,6 @@ router.put('/:id/name', userController.updateUserName);
 // Delete user by name and email
 router.delete('/name-email', userController.deleteUserByNameAndEmail);
 
+router.put('/change-name', userController.updateUserNameByEmail); //newly added for the sake of change in username in settings
+
 export default router
