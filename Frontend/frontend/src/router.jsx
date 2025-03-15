@@ -71,7 +71,6 @@ const router = createBrowserRouter([
             {path:"planspage",element:<PlansPage/>},
         ],
     },
-   
     
 ]);
 

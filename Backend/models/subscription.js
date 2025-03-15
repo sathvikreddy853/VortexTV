@@ -5,7 +5,6 @@ const Subscription=
     // used only when u know confirmly the user need to be added
     addUserSubscription: async  (user_id,plan_id,duration)=>
     {
-        console.log("from model ",user_id,plan_id)
         try{
             const subscriptionId = user_id+"_"+plan_id;
 
@@ -36,7 +35,8 @@ const Subscription=
             );
             return rows[0]; // returns complete row so u can check whats end date when user tries to claim a subscription when he is already there
         }
-        catch(error){
+        catch(error)
+        {
             console.error('Error finding subscription by user_id:', error);
             throw error;
         }
@@ -98,6 +98,23 @@ const Subscription=
             console.error('Error finding plan by plan_id:', error);
             throw error;
         }
+    },
+
+    deleteSubscription: async (user_id) => 
+        {
+            try 
+            {
+                const [result] = await pool.execute(
+                    'DELETE FROM Subscriptions WHERE user_id = ?',
+                    [user_id]
+                );
+                return result.affectedRows;
+            } 
+            catch (error) 
+            {
+                console.error('Error deleting subscription:', error);
+                throw error;
+            }
     },
 
 
