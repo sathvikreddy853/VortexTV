@@ -18,7 +18,7 @@ const pool = mysql.createPool({
     database: 'vortexTv',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0   
 }).promise();
 
 export default pool;

@@ -14,7 +14,7 @@ const DefaultMovies = () => {
             >
                 {/* Render 20 movie cards */}
                 {Array.from({ length: 40 }).map((current, index) => (
-                    <MovieCard key={index} />
+                    <MovieCard key={index} link="https://www.youtube.com/watch?v=-UbZQzeQvFw"/>
                 ))}
             </div>
         </div>

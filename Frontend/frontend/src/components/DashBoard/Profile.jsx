@@ -37,8 +37,14 @@ const Profile = () => {
         fetchPlanDetails();
     }, []);
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-transparent p-6">
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 p-6">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
                 <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Profile</h2>
 
@@ -77,6 +83,12 @@ const Profile = () => {
                     >
                         Change Password
                     </Link>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full bg-red-600 hover:bg-red-500 active:scale-90 text-white font-semibold py-3 px-6 rounded-xl text-center transition-all duration-300 ease-in-out shadow-md transform hover:-translate-y-1 hover:shadow-lg"
+                    >
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>

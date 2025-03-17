@@ -16,18 +16,55 @@ CREATE TABLE `Watch_History` (
 );
 
 
-DELIMITER ;;
-CREATE TRIGGER after_insert_movie
-AFTER INSERT ON Movies
-FOR EACH ROW
-BEGIN
-    DECLARE basic_plan_id VARCHAR(10);
 
-    -- Fetch the lowest plan_id (assuming Basic Plan is the first plan)
-    SELECT MIN(plan_id) INTO basic_plan_id FROM Plans;
 
-    -- Insert the new movie into Movie_Access table with the Basic Plan
-    INSERT INTO Movie_Access (movie_id, plan_id) 
-    VALUES (NEW.movie_id, basic_plan_id);
-END;;
-DELIMITER ;
+CREATE TABLE Watchlist (
+    watchlist_id INT AUTO_INCREMENT PRIMARY KEY, -- Unique ID for each entry
+    user_id VARCHAR(10) NOT NULL,               -- References Users table
+    movie_id VARCHAR(10) NOT NULL,              -- References Movies table
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Time when movie was added
+
+    UNIQUE (user_id, movie_id),  -- Prevents duplicate entries
+
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE movie_views 
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id varchar(10) NOT NULL,
+    user_id varchar(10),  -- Nullable, for guests
+    watched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE movie_ratings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id varchar(10) NOT NULL,
+    user_id varchar(10) NOT NULL,
+    rating FLOAT CHECK (rating BETWEEN 0 AND 10), -- Rating scale (e.g., 1-10)
+    review TEXT,
+    rated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+---------------------------------------------------------
+
+
+CREATE VIEW trending_movies AS
+SELECT 
+    m.id AS movie_id, 
+    m.title, 
+    COUNT(v.id) AS view_count, 
+    IFNULL(AVG(r.rating), 0) AS avg_rating,
+    (COUNT(v.id) * 0.7 + IFNULL(AVG(r.rating), 0) * 0.3) AS trending_score
+FROM Movies m
+LEFT JOIN movie_views v ON m.id = v.movie_id
+LEFT JOIN movie_ratings r ON m.id = r.movie_id
+GROUP BY m.id
+ORDER BY trending_score DESC;
+

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Navbar1 from './Navbar1';
 
 const Intro = () => {
     const [displayText, setDisplayText] = useState('');
@@ -9,25 +8,35 @@ const Intro = () => {
         const fullText = 'VortexTV';
         let currentIndex = 0;
 
-        const animation = setInterval(() => {
-            if (currentIndex <= fullText.length) 
+        const animation = setInterval
+        (
+            () => 
             {
-                setDisplayText(fullText.substring(0, currentIndex)); // step by step changing the text 
-                //this is actually ineff but easy to implement 
-                currentIndex++;
-                //as use effect dependencies are nothing only runs upon mounting
-                //nwow as useffect runs only ones but not every rerender so therfore current index is not reinitialized everytime 
-            } 
-            else 
-            {
-                clearInterval(animation);
-                setIsVisible(true); 
-            }
-        }, 150);
+                    if (currentIndex <= fullText.length) 
+                    {
+                        setDisplayText(fullText.substring(0, currentIndex)); // step by step changing the text 
+                        //this is actually ineff but easy to implement 
+                        currentIndex++;
+                        //as use effect dependencies are nothing only runs upon mounting
+                        //nwow as useffect runs only ones but not every rerender so therfore current index is not reinitialized everytime 
+                    } 
+                    else 
+                    {
+                        clearInterval(animation);
+                        setIsVisible(true); 
+                    }
+            }, 
+    150);
 
         return () => clearInterval(animation); 
 
         // before unmounting the component this function is called so that now when i move to other component on navc bar this dosent happen
+    }, []);
+
+
+    useEffect(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
     }, []);
 
     return (
@@ -36,6 +45,8 @@ const Intro = () => {
             <div className="flex flex-col items-center justify-center h-screen">
                 <h1 className={`text-6xl font-extrabold transition-all duration-500 ease-in-out ${isVisible ? 'animate-glow' : '' }`}>
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">
+                        {/* in general bg applied to entire element but if we write bg-clip text then that is only for text not complete element
+                        remmberber text transparent is important becasue the bg-clip text will be overwritten if text-transparrent is ot used  */}
                         {displayText}
                     </span>
                 </h1>

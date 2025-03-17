@@ -17,6 +17,7 @@ import DefaultMovies from "./components/DashBoard/DefaultMovies";
 import PasswordChangeForm from "./components/DashBoard/changePassword";
 import ChangeUsernameForm from "./components/DashBoard/changeusernameform";
 import PlansPage from "./components/DashBoard/planandsunscription";
+import YouTubeEmbed from "./components/DashBoard/frame";
 const UnrestrictedLayout = () => {
     return (
         <div>
@@ -69,6 +70,7 @@ const router = createBrowserRouter([
             {path: "profile/changepassword",element:<PasswordChangeForm/>},
             {path:"profile/changeusername",element:<ChangeUsernameForm/>},
             {path:"planspage",element:<PlansPage/>},
+            {path: "frame",element:<YouTubeEmbed/>},
         ],
     },
     

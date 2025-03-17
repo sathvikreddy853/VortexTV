@@ -4,13 +4,16 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const authController = {
-    signup: async (req, res) => {
+const authController = 
+{
+    signup: async (req, res) => 
+    {
         try {
             const { name, email, password } = req.body;
 
             const existingUser = await User.findByEmail(email);
-            if (existingUser) {
+            if (existingUser) 
+            {
                 return res.status(400).json({
                     message: "Email already exists",
                 });
@@ -20,7 +23,8 @@ const authController = {
 
             const newUser = await User.create(name, email, hashedPassword);
 
-            const token = jwt.sign(
+            const token = jwt.sign
+            (
                 {
                     userId: newUser.user_id,
                 },

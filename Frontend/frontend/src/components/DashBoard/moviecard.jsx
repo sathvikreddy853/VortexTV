@@ -1,10 +1,32 @@
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import image from "./img.jpg";
+import {  useNavigate } from "react-router-dom";
 
-function MovieCard() {
+// movie card is available on reactbootstrap website directly just changed some css and added some props
+
+
+
+
+//the props need to have link inthem so that taht can be passed again to frame.jsx
+function MovieCard(props) 
+{
+        const navigate = useNavigate()
+
+        const clickHandler=async (e)=>
+        {
+            e.preventDefault();
+            sessionStorage.setItem('videoLink', props?.link);
+            navigate('/dashboard/frame');
+        }
+        
+
+
+
     return (
+        //put on handel click and in that function use navigate to send props through state prop to other route
         <Card 
+            onClick={clickHandler}
             style={{ 
                 width: '18rem', 
                 borderRadius: '12px', 
