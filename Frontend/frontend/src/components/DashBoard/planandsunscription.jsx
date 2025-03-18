@@ -20,25 +20,43 @@ export default function PlansPage() {
         try {
             console.log(planId, user.email, user.user_id);
 
-            const response = await fetch("http://localhost:3000/subscription/subscribe", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: user.user_id, email: user.email, plan_id: planId, duration: plans[index].duration }),
-            });
+            const token = localStorage.getItem("token");
+            if (!token) 
+            {
+                setMessage("Unauthorized: No token found.");
+                return;
+            }
+    
+
+            const response = await fetch("http://localhost:3000/subscription/subscribe", 
+                {
+                    method: "POST",
+                    headers: 
+                        {  "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    body: JSON.stringify({ user_id: user.user_id, email: user.email, plan_id: planId, duration: plans[index].duration }),
+                }
+            );
             const data = await response.json();
 
-            if (response.ok) {
+            if (response.ok) 
+            {
                 setMessage("Subscription successful!");
                 setEndDate(data.subscription.end_date);
-            } else {
+            } else 
+            {
                 setMessage(data.message);
             }
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             setMessage("Error processing subscription. Please try again.");
             console.error("Subscription error:", error);
         }
 
-        setTimeout(() => {
+        setTimeout(() => 
+        {
             setMessage("");
             setEndDate(null);
         }, 5000);

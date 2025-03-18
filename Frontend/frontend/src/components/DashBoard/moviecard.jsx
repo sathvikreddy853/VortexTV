@@ -1,41 +1,29 @@
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import image from "./img.jpg";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-// movie card is available on reactbootstrap website directly just changed some css and added some props
+function MovieCard(props) {
+    const navigate = useNavigate();
 
-
-
-
-//the props need to have link inthem so that taht can be passed again to frame.jsx
-function MovieCard(props) 
-{
-        const navigate = useNavigate()
-
-        const clickHandler=async (e)=>
-        {
-            e.preventDefault();
-            sessionStorage.setItem('videoLink', props?.link);
-            navigate('/dashboard/frame');
-        }
-        
-
-
+    const clickHandler = async (e) => {
+        e.preventDefault();
+        sessionStorage.setItem('videoLink', props?.link);
+        navigate('/dashboard/frame');
+    };
 
     return (
-        //put on handel click and in that function use navigate to send props through state prop to other route
         <Card 
             onClick={clickHandler}
             style={{ 
-                width: '18rem', 
-                borderRadius: '12px', 
+                width: '14rem',  // Reduced width
+                borderRadius: '10px', 
                 overflow: 'hidden', 
-                boxShadow: '0 6px 15px rgba(0, 0, 0, 0.2)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
                 transition: 'transform 0.3s ease-in-out',
                 backgroundColor: '#222', 
                 color: 'white',
-                margin: "10px"
+                margin: "8px" // Reduced margin for tighter spacing
             }} 
             className="hover:scale-105">
             <Card.Img 
@@ -44,28 +32,25 @@ function MovieCard(props)
                 alt="Movie Poster" 
                 style={{ 
                     width: '100%',  
-                    height: '250px',  
+                    height: '200px',  // Reduced height
                     objectFit: 'cover',
-                    borderTopLeftRadius: "12px",
-                    borderTopRightRadius: "12px",
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
                 }}
             />
 
-            {/* Movie Content */}
-            <Card.Body className="text-center">
-                <Card.Title style={{ fontSize: "1.4rem", fontWeight: "bold" }}>
+            <Card.Body className="text-center" style={{ padding: '10px' }}>
+                <Card.Title style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
                     Movie Title
                 </Card.Title>
-                <Card.Text style={{ fontSize: "1rem", padding: "10px", color: "#ddd" }}>
-                    This is a short description of the movie. Explore now!
+                <Card.Text style={{ fontSize: "0.9rem", color: "#ddd" }}>
+                    Short description of the movie.
                 </Card.Text>
                 <Button 
                     variant="danger" 
-                    href="https://www.youtube.com/" 
-                    target="_blank"
                     style={{ 
-                        fontSize: "1rem", 
-                        padding: "8px 18px", 
+                        fontSize: "0.9rem", 
+                        padding: "6px 14px", 
                         borderRadius: "50px",
                         fontWeight: "bold",
                         transition: "all 0.3s ease-in-out"

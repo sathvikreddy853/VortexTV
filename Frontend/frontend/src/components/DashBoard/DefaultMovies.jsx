@@ -2,6 +2,8 @@ import React from "react";
 import MovieCard from "./moviecard"; // Import your movie card component
 
 const DefaultMovies = () => {
+
+    console.log("here in default movies")
     return (
         <div className="p-6">
             <h1 className="text-3xl font-bold text-center mb-4">Welcome to the Movies Section</h1>

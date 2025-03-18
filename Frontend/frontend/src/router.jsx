@@ -18,6 +18,7 @@ import PasswordChangeForm from "./components/DashBoard/changePassword";
 import ChangeUsernameForm from "./components/DashBoard/changeusernameform";
 import PlansPage from "./components/DashBoard/planandsunscription";
 import YouTubeEmbed from "./components/DashBoard/frame";
+import Searchbar from "./components/DashBoard/searchbar";
 const UnrestrictedLayout = () => {
     return (
         <div>
@@ -27,12 +28,12 @@ const UnrestrictedLayout = () => {
     );
 };
 
-const SecuredLayer =() => {
+// const SecuredLayer =() => {
    
-    return(<SecurityLayer>
-        <Outlet/>
-    </SecurityLayer>)
-}
+//     return(<SecurityLayer>
+//         <Outlet/>
+//     </SecurityLayer>)
+// }
 
 
 
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
             {path:"profile/changeusername",element:<ChangeUsernameForm/>},
             {path:"planspage",element:<PlansPage/>},
             {path: "frame",element:<YouTubeEmbed/>},
+            {path:"searchbar",element:<Searchbar/>},
         ],
     },
     

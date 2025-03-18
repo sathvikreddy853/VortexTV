@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 // const SecurityLayer = () => {
@@ -6,9 +7,67 @@ import { Navigate, Outlet } from "react-router-dom";
 // };
 
 
-const SecurityLayer = ({ children }) => {
-    const isAuthenticated = localStorage.getItem("token"); 
-    return isAuthenticated ? children : <Navigate to="/login" />;
+const SecurityLayer = ({ children }) => 
+{
+    const [isValid, setIsValid] = useState(null); 
+
+
+    useEffect(
+        () =>
+    {
+
+        const check= async ()=>
+        {
+            const token = localStorage.getItem("token"); 
+            // console.log("Token being sent:", localStorage.getItem("token"));
+
+            if(!token)
+            {
+                setIsValid(false)
+                return
+            }
+
+            try
+            {
+                const response = await fetch("http://localhost:3000/auth/validate", {
+                    method: "POST",
+                    headers: 
+                    {
+                        "Authorization" : `Bearer ${token}`,
+                    }
+
+
+                })
+
+                const data = await response.json()
+
+                if(data.valid)
+                {
+                    setIsValid(true)
+                }
+                else
+                {
+                    setIsValid(false)
+                    localStorage.removeItem("token")
+
+                }
+            }
+            catch(err)
+            {
+                setIsValid(false)
+            }
+
+        }
+
+        check()
+    },[]
+)
+
+
+        if (isValid === null) return <div>Loading...</div>; 
+
+
+    return isValid ? children : <Navigate to="/login" />;
 };
 
 export default SecurityLayer

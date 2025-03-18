@@ -10,26 +10,48 @@ const Profile = () => {
     const [endDate, setEndDate] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchPlanDetails = async () => {
+    useEffect(
+        () => {
+        const fetchPlanDetails = async () => 
+        {
             try {
                 if (!user || !user.user_id) {
                     navigate("/login");
                     return;
                 }
 
-                const response = await fetch('http://localhost:3000/subscription/fetchplan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: user.user_id }),
-                });
+                let token = localStorage.getItem("token");
+                
+                // console.log(token)   // for debugging process
+                
+                if (!token) 
+                {
+                    console.error("No token found! Redirecting to login...");
+                    return;  
+                }
 
-                if (response.ok) {
+
+
+                const response = await fetch('http://localhost:3000/subscription/fetchplan', 
+                        {
+                            method: 'POST',
+                            headers:{ 
+                                        "Authorization": `Bearer ${token}`,
+                                        'Content-Type': 'application/json' ,
+                                    },
+                                    body: JSON.stringify({ user_id: user.user_id }),
+                        }
+                );
+
+                if (response.ok) 
+                {
                     const data = await response.json();
                     setPlan(data.planName);
                     setEndDate(data.endDate ? new Date(data.endDate) : null);
                 }
-            } catch (err) {
+            } 
+            catch (err) 
+            {
                 console.error("Error fetching plan details:", err);
             }
         };
