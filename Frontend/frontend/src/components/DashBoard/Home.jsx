@@ -52,7 +52,8 @@ const Home = () => {
 };
 
 // NavLink Component
-const NavLink = ({ to, label, location }) => (
+const NavLink = ({ to, label, location }) => 
+(
     <Link to={to} className={`block py-3 px-5 rounded-lg text-lg font-medium transition-all duration-200 text-white tracking-wide shadow-md
         ${location.pathname === to ? "bg-indigo-700 scale-105" : "hover:bg-red-500"}`}>
         {label}

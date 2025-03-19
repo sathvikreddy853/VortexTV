@@ -16,7 +16,7 @@ function MovieCard(props) {
         <Card 
             onClick={clickHandler}
             style={{ 
-                width: '14rem',  // Reduced width
+                width: '10rem',  // Reduced width
                 borderRadius: '10px', 
                 overflow: 'hidden', 
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',

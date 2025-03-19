@@ -1,64 +1,73 @@
 import React, { useState, useEffect } from "react";
 import MovieCard from "./moviecard";
+import { motion } from "framer-motion";
+import useDebounce from "../hooks"; // Importing the debounce hook
 
 const SearchBar = () => {
     const [searchValue, setSearchValue] = useState("");
     const [searchResult, setSearchResult] = useState([]);
-    const [errorMessage, setErrorMessage] = useState(""); // Separate state for error messages
+    const [errorMessage, setErrorMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const onChangeHandler = (e) => {
-        setSearchValue(e.target.value);
-    };
+    const debouncedSearch = useDebounce(searchValue, 500); 
 
     useEffect(() => {
-        const fetchMovies = async () => {
-            if (searchValue.trim() === "") {
-                setSearchResult([]); // Clear results when input is empty
-                setErrorMessage(""); // Clear error messages
-                return;
-            }
+        if (debouncedSearch.trim() === "") 
+        {
+            setSearchResult([]);
+            setErrorMessage("");
+            setLoading(false);
+            return;
+        }
 
+        setLoading(true);
+
+        const fetchMovies = async () => {
             try {
-                console.log("hi")
-                const response = await fetch(`http://localhost:3000/movies/moviesearch?moviename=${searchValue}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
+                console.log("Fetching movies...");
+                const response = await fetch(
+                    `http://localhost:3000/movies/moviesearch?moviename=${debouncedSearch}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    }
+                );
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    console.log(data);
-                    if (data.length === 0) 
-                    {
-                        setSearchResult([]); // Keep empty, just show a message
-                        setErrorMessage("No movies found.");
-                    } else {
-                        setSearchResult(data);
-                        setErrorMessage(""); // Clear any previous error message
-                    }
+                    setSearchResult(data.length ? data : []);
+                    setErrorMessage(data.length ? "" : "No movies found.");
                 } else {
                     setSearchResult([]);
-                    setErrorMessage("An error occurred. Please try again later.");
+                    setErrorMessage("An error occurred. Please try again.");
                 }
-            } catch (err) {
+            }
+            catch (err) {
                 console.error("Error fetching movies:", err);
                 setSearchResult([]);
                 setErrorMessage("Failed to connect to server. Check your internet connection.");
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchMovies();
-    }, [searchValue]);
+    }, [debouncedSearch]); 
 
-    const btnClckHandler = () => {
+    const onChangeHandler = (e) => 
+    {
+        setSearchValue(e.target.value);
+    };
+
+    const btnClckHandler = () => 
+    {
         setSearchValue("");
         setSearchResult([]);
-        setErrorMessage(""); // Reset everything
+        setErrorMessage("");
     };
 
     return (
@@ -72,10 +81,31 @@ const SearchBar = () => {
                     value={searchValue}
                     onChange={onChangeHandler}
                 />
-                <button onClick={btnClckHandler} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-5 py-2 rounded-full hover:bg-blue-600 transition-all hover:shadow-lg">
+                <button
+                    onClick={btnClckHandler}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-5 py-2 rounded-full hover:bg-blue-600 transition-all hover:shadow-lg"
+                >
                     {searchValue ? "X" : "🔍"}
                 </button>
             </div>
+
+            {/* Loading Bar */}
+            {loading && (
+                <motion.div
+                    className="w-full max-w-md h-2 mt-3 bg-gray-300 rounded overflow-hidden relative">
+                    <motion.div
+                        className="absolute left-0 top-0 h-full bg-blue-500"
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            repeatType: "mirror",
+                            ease: "easeInOut",
+                        }}
+                    />
+                </motion.div>
+            )}
 
             {/* Search Result Area */}
             <div className="w-full max-w-2xl mt-5">
