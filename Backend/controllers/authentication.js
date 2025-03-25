@@ -52,20 +52,23 @@ const authController =
 
     login: async (req, res) => {
         try {
-            const { email, password } = req.body;
+            const { email, password } = req.body;  
 
-            const user = await User.findByEmail(email);
-            if (!user) {
-                return res.status(401).json({
-                    message: "Invalid credentials",
-                });
+            const user = await User.findByEmail(email);  // checking wether user is present in db or not
+            if (!user) 
+            {
+
+                return res.status(401).json({message: "Invalid credentials",});
             }
-            const passwordMatch = await bcrypt.compare(password, user.password_hash);
-            if (!passwordMatch) {
-                return res.status(401).json({
-                    message: "Invalid credentials",
-                });
+
+            const passwordMatch = await bcrypt.compare(password, user.password_hash); // compares db's userpassword and sent password
+
+            if (!passwordMatch) 
+            {
+                return res.status(401).json({message: "Invalid credentials",});
             }
+
+            // here u can encode any object but i am encoding simply user_id because u can work everything with that 
             const token = jwt.sign(
                 {
                     userId: user.user_id,
@@ -75,7 +78,10 @@ const authController =
                     expiresIn: "7d",
                 }
             );
-            res.json({
+
+            // frankly speaking user object should nnot be sent only token is enough but my complete backend just pretends to have security where infact it dosent
+            res.json
+            ({
                 token,
                 user: 
                 {
@@ -84,11 +90,11 @@ const authController =
                     email: user.email,
                 },
             }); 
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             console.error("Error during login:", error);
-            res.status(500).json({
-                message: "Internal server error",
-            });
+            res.status(500).json({message: "Internal server error", });
         }
     },
 
@@ -97,7 +103,8 @@ const authController =
             const { email } = req.body;
             const user = await User.findByEmail(email);
 
-            if (!user) {
+            if (!user) 
+            {
                 return res.status(404).json({ message: "User not found" }); // code 404 means it is negative result
             }
 
@@ -124,11 +131,49 @@ const authController =
             await User.updatePassword(user.user_id, hashedPassword);
 
             res.json({ message: "Password reset successful" });
-        } catch (error) {
+        } catch (error) 
+        {
             console.error("Error during reset password:", error);
             res.status(500).json({ message: "Internal server error" });
         }
     },
+
+    validate: async (req, res) => {
+        try {
+                const token = req.headers.authorization?.split(" ")[1];
+                // console.log("token in  backendis :",token)
+    
+            if (!token) 
+            {
+                // console.log("in this check 1")
+                return res.status(401).json({ valid: false, message: "No token provided" });
+            }
+    
+            let decoded;
+            try 
+            {
+                decoded = jwt.verify(token, "your-secret-key");
+            } catch (err) 
+            {
+                const errorMessage =
+                    err.name === "TokenExpiredError" ? "Token expired" :
+                    err.name === "JsonWebTokenError" ? "Invalid token" :
+                    "Token verification failed";
+                // console.log("403 here")
+                return res.status(403).json({ valid: false, message: errorMessage });
+            }
+    
+            return res.status(200).json({ valid: true });
+    
+        } catch (err) 
+        {
+            console.error("JWT Validation Error:", err);
+            return res.status(500).json({ valid: false, message: "Server error" });
+        }
+    }
+    
+    
 };
+
 
 export default authController;

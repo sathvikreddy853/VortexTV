@@ -9,11 +9,10 @@ const SearchBar = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const debouncedSearch = useDebounce(searchValue, 500); 
+    const debouncedSearch = useDebounce(searchValue, 500);
 
     useEffect(() => {
-        if (debouncedSearch.trim() === "") 
-        {
+        if (debouncedSearch.trim() === "") {
             setSearchResult([]);
             setErrorMessage("");
             setLoading(false);
@@ -56,15 +55,13 @@ const SearchBar = () => {
         };
 
         fetchMovies();
-    }, [debouncedSearch]); 
+    }, [debouncedSearch]);
 
-    const onChangeHandler = (e) => 
-    {
+    const onChangeHandler = (e) => {
         setSearchValue(e.target.value);
     };
 
-    const btnClckHandler = () => 
-    {
+    const btnClckHandler = () => {
         setSearchValue("");
         setSearchResult([]);
         setErrorMessage("");
@@ -108,7 +105,7 @@ const SearchBar = () => {
             )}
 
             {/* Search Result Area */}
-            <div className="w-full max-w-2xl mt-5">
+            <div className="w-full max-w-2xl mt-5 max-h-96 overflow-y-auto scrollbar-hide">
                 <h2 className="text-xl font-semibold mb-2 text-white">Search Results:</h2>
                 <div className="grid gap-4 w-full">
                     {errorMessage ? (
@@ -118,12 +115,18 @@ const SearchBar = () => {
                     ) : (
                         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                             {searchResult.map((movie, index) => (
-                                <MovieCard key={index} link={movie.source_link} className="shadow-lg rounded-lg overflow-hidden backdrop-blur-md bg-white/30" />
+                                <MovieCard
+                                    key={index}
+                                    movieInfo={movie}
+                                    link={movie.source_link}
+                                    className="shadow-lg rounded-lg overflow-hidden backdrop-blur-md bg-white/30"
+                                />
                             ))}
                         </div>
                     )}
                 </div>
             </div>
+
         </div>
     );
 };

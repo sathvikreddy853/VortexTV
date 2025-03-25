@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-    const user = JSON.parse(localStorage.getItem('user')) || {
+    let user = JSON.parse(localStorage.getItem('user')) || {
         name: 'Guest User',
         email: 'guest@example.com',
     };
@@ -58,6 +58,16 @@ const Profile = () => {
 
         fetchPlanDetails();
     }, []);
+
+
+//         useEffect (()=>{
+//                 const fetchUserDetails = async () => 
+//                 {
+//                     // pending fill based on provided api
+//                 }
+
+//                 user=fetchUserDetails()
+// },[])
 
     const handleLogout = () => {
         localStorage.removeItem('token');

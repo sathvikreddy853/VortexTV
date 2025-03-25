@@ -22,7 +22,7 @@ const User = {
                 'SELECT * FROM Users WHERE user_id = ?',
                 [userId]
             );
-            return rows[0];  // this exactly returns required object nothing else
+            return rows[0];  // this exactly returns required row object nothing else
         } catch (error) {
             console.error('Error finding user by user_id:', error);
             throw error;

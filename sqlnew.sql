@@ -68,3 +68,14 @@ LEFT JOIN movie_ratings r ON m.id = r.movie_id
 GROUP BY m.id
 ORDER BY trending_score DESC;
 
+CREATE TABLE Genres (
+    genre_id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+CREATE TABLE MovieGenres (
+    movie_id VARCHAR(10) NOT NULL,
+    genre_id INT NOT NULL,
+    PRIMARY KEY (movie_id, genre_id),
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES Genres(genre_id) ON DELETE CASCADE
+);
