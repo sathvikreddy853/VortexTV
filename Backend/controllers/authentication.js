@@ -12,6 +12,7 @@ const authController =
             const { name, email, password } = req.body;
 
             const existingUser = await User.findByEmail(email);
+
             if (existingUser) 
             {
                 return res.status(400).json({
@@ -42,7 +43,8 @@ const authController =
                     email: newUser.email,
                 },
             }); 
-        } catch (error) {
+        } catch (error) 
+        {
             console.error("Error during signup:", error);
             res.status(500).json({
                 message: "Internal server error",

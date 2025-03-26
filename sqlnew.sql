@@ -79,3 +79,16 @@ CREATE TABLE MovieGenres (
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
     FOREIGN KEY (genre_id) REFERENCES Genres(genre_id) ON DELETE CASCADE
 );
+--------------------------------------------------------------------------------------------------------------------
+
+
+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| movie_id     | varchar(10)  | NO   | PRI | NULL    |       |
+| title        | varchar(255) | NO   |     | NULL    |       |
+| release_year | year(4)      | NO   |     | NULL    |       |
+| duration     | int(11)      | NO   |     | NULL    |       |
+| rating       | decimal(3,1) | YES  |     | NULL    |       |
+| source_link  | varchar(255) | NO   |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+

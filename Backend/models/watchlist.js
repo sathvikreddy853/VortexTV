@@ -9,7 +9,7 @@ const Watchlist = {
                 'SELECT Watchlist_id FROM Watchlist WHERE user_id = ? AND movie_id = ?',
                 [userId, movieId]
             );
-    
+            
             if (existing.length > 0) 
             {
                 // Update timestamp if movie is already in Watchlist

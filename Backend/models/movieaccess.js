@@ -26,41 +26,37 @@ const MovieAccess = {
             }
         },
 
-        // give me a function that gives list of movies based on movie id from the Movies table
+        // function that gives list of movies based on movie id from the Movies table
         
-        getMovies : async (movie_id) => 
+        getMovies: async (movie_id) => 
         {
-            try 
-            {
+            console.log("movie_id from getMovies in movieaccessmodel is ",movie_id)
+            try {
+                
+                if (!movie_id ) 
+                {
+                    throw new Error("Invalid movie_id is given");
+                }
+        
                 const [rows] = await pool.execute(
                     'SELECT * FROM Movies WHERE movie_id = ?',
                     [movie_id]
                 );
-                return rows[0];
+        
+                if (rows.length === 0) 
+                {
+                    throw new Error("Movie not found");
+                }
+        
+                return rows[0]; 
             } 
             catch (error) 
             {
-                console.error('Error finding movie by movie_id:', error);
-                throw error;
+                console.error('Error finding movie by movie_id:', error.message);
+                throw new Error("Failed to retrieve movie details");
             }
-        },
-        // getGenres : async (movie_id) => 
-        // {
-        //     try 
-        //     {
-        //         const [rows] = await pool.execute(
-        //             'SELECT * FROM MovieGenres WHERE movie_id = ?',
-        //             [movie_id]
-        //         );
-        //         return rows; // list of genres it is
-        //     } 
-        //     catch (error) 
-        //     {
-        //         console.error('Error finding movie by movie_id:', error);
-        //         throw error;
-        //     }
-        // }
-
+        }
+        
 
 }
 

@@ -4,10 +4,14 @@ import image from "./img.jpg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+
+
+// expects props as movieInfo and link  
 function MovieCard(props) {
     const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
 
+    // this checks wether user can access this movie or not thats it
     const clickHandler = async (e) => {
         e.preventDefault();
 
@@ -25,12 +29,16 @@ function MovieCard(props) {
 
         const data = await response.json();
 
-        if (response.ok) {
-            if (data.access) {
+        if (response.ok)
+        {
+            if (data.access) 
+            {
                 sessionStorage.setItem('videoLink', props?.link);
                 sessionStorage.setItem('thisMovie',JSON.stringify(props?.movieInfo))
                 navigate('/dashboard/frame');
-            } else {
+            } 
+            else 
+            {
                 setShowPopup(true);
             }
         }

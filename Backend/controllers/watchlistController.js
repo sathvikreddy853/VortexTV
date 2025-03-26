@@ -1,5 +1,7 @@
 import Watchlist from "../models/watchlist.js";
 import MovieAccess from "../models/movieaccess.js";
+import Genres from "../models/Genres.js";
+
 const WatchlistController = {
     // Add a movie to the watchlist
     addMovie: async (req, res) => {
@@ -55,23 +57,25 @@ const WatchlistController = {
         try {
             const { user_id } = req.body;
     
-            if (!user_id) {
+            if (!user_id) 
+            {
                 return res.status(400).json({ message: "user_id is required" });
             }
     
             // Get all watchlist entries for the user
-            const watchlist = await Watchlist.getUserWatchlist(user_id);
+            const watchlist = await Watchlist.getUserWatchlist(user_id);  // returns rows of watchlist table associated with user_id
     
             // Fetch movie details for each movie_id in the watchlist
             const movies = await Promise.all(
                 watchlist.map(async (entry) => 
                 {
-                    const movieDetails = await MovieAccess.getMovies(entry.movie_id);
-                    return movieDetails; // Assuming getMovies returns an array, take the first object
+                    const movieDetails = await MovieAccess.getMovies(entry.movie_id);// one movie object exactly is returned
+                    movieDetails["genreArray"] = await Genres.getMovieGenres(entry.movie_id); // adding a key  for each movie object
+                    return movieDetails; 
                 })
             );
     
-            return res.status(200).json({ watchlist: movies }); // return array of moveis
+            return res.status(200).json({ watchlist: movies }); // return array of movie objects which has an extra key called genreArray
         } catch (error) {
             console.error("Error fetching watchlist:", error);
             return res.status(500).json({ message: "Internal server error" });
