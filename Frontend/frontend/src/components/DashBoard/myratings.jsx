@@ -45,7 +45,8 @@ const MyReviews = () => {
 
     const handleDelete = async (movieId) => {
         try {
-            const response = await fetch(`http://localhost:3000/rating/delete`, {
+            const response = await fetch(`http://localhost:3000/rating/delete`, 
+            {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

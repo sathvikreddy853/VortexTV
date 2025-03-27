@@ -4,11 +4,11 @@ const RatingController = {
     // 1. Add a new rating
     addRating: async (req, res) => {
         const { user_id, movie_id, rating, review } = req.body;
-    
+
         try {
             // Check if the user has already rated the movie
             const existingRating = await MovieRating.getUserRatingForMovie(user_id, movie_id);
-    
+
             if (existingRating) {
                 // If rating exists, update it
                 const updated = await MovieRating.updateRating(user_id, movie_id, rating, review);
@@ -30,7 +30,7 @@ const RatingController = {
             res.status(500).json({ error: error.message });
         }
     },
-    
+
     // 2. Delete a rating based on user_id and movie_id
     deleteRating: async (req, res) => {
         const { user_id, movie_id } = req.body;
@@ -77,24 +77,41 @@ const RatingController = {
 
 
 
-        // 5. Get a user's rating for a specific movie
-        getUserRatingForMovie: async (req, res) => 
-        {
-            const { user_id, movie_id } = req.params;
-            try {
-                const rating = await MovieRating.getUserRatingForMovie(user_id, movie_id);
-                if (rating) {
-                    res.status(200).json(rating);
-                } else {
-                    res.status(404).json({ message: "Rating not found for this user and movie" });
-                }
-            } catch (error) {
-                res.status(500).json({ error: error.message });
+    // 5. Get a user's rating for a specific movie
+    getUserRatingForMovie: async (req, res) => {
+        const { user_id, movie_id } = req.params;
+        try {
+            const rating = await MovieRating.getUserRatingForMovie(user_id, movie_id);
+            if (rating) {
+                res.status(200).json(rating);
+            } else {
+                res.status(404).json({ message: "Rating not found for this user and movie" });
             }
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
+    },
+
+    //dont confuse above function is diffeeent
+    getReviews: async (req, res) => {
+        try {
+            const { movieId } = req.body;
+            if (!movieId) 
+            {
+                return res.status(400).json({ error: "movieId is required in the body" });
+            }
+            const reviews = await MovieRating.getReviewsByMovieId(movieId);
+            res.status(200).json(reviews);
+        } 
+        catch (error) 
+        {
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
+
 }
-    
-    
+
+
 
 
 export default RatingController;

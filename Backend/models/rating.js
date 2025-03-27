@@ -2,8 +2,7 @@ import pool from "../config/db.js";
 
 const MovieRating = {
     // 1. Fetch rating for a specific movie by a user
-    getUserRatingForMovie: async (user_id, movie_id) => 
-    {
+    getUserRatingForMovie: async (user_id, movie_id) => {
         try {
             const [rows] = await pool.execute(
                 'SELECT * FROM movie_ratings WHERE user_id = ? AND movie_id = ?',
@@ -29,7 +28,7 @@ const MovieRating = {
             throw error;
         }
     },
-    
+
     // 3. Add a new rating
     addRating: async (user_id, movie_id, rating, review) => {
         try {
@@ -97,6 +96,26 @@ const MovieRating = {
             throw error;
         }
     }
+
+    ,
+
+    getReviewsByMovieId: async function (movieId) 
+    {
+        const query = `
+        SELECT mr.review, mr.rating, mr.rated_at, u.user_id, u.name
+        FROM movie_ratings mr
+        JOIN Users u ON mr.user_id = u.user_id
+        WHERE mr.movie_id = ?;
+        `;
+        try {
+            const [reviews] = await pool.execute(query, [movieId]);
+            return reviews;
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+            throw error;
+        }
+    }
+
 };
 
 export default MovieRating;

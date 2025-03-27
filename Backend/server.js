@@ -10,6 +10,9 @@ import moviesRoutes  from "./routes/searchRouter.js";
 import movieAccessRoutes from "./routes/movieaccessRouter.js"
 import wattchlistRoutes from "./routes/watchlistRoutes.js"
 import ratingRoutes from "./routes/ratingRouter.js"
+import popularityRoutes from "./routes/popularityRouter.js"
+import likeRoutes from "./routes/likeRoutes.js"
+
 dotenv.config();
 
 
@@ -31,8 +34,8 @@ app.use('/movies',moviesRoutes);
 app.use('/movieaccess',movieAccessRoutes) //latest added route for movieaccess checking
 app.use('/watchlist',wattchlistRoutes)
 app.use('/rating',ratingRoutes)
-
-
+app.use('/popularity',popularityRoutes)
+app.use('/like',likeRoutes)
 
 
 

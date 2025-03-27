@@ -20,6 +20,7 @@ import PlansPage from "./components/DashBoard/planandsunscription";
 import YouTubeEmbed from "./components/DashBoard/frame";
 import Searchbar from "./components/DashBoard/searchbar";
 import UpgradePage from "./components/DashBoard/upgrade";
+import ReviewPage from "./components/DashBoard/reviewpage";
 import MyReviews from "./components/DashBoard/myratings";
 const UnrestrictedLayout = () => {
     return (
@@ -76,6 +77,7 @@ const router = createBrowserRouter([
             {path: "frame",element:<YouTubeEmbed/>},
             {path:"searchbar",element:<Searchbar/>},
             {path:"upgrade",element:<UpgradePage/>},
+            {path :"moviereviews/:movie_id",element:<ReviewPage/>}
             
         ],
     },
@@ -88,7 +90,9 @@ const router = createBrowserRouter([
             </SecurityLayer>
         ),
         children: [
-            { index: true, element: <MyReviews /> },
+            { index: true, element: <MyReviews /> 
+              
+            },
         ],
     }
     
