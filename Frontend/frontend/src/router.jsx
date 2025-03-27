@@ -19,6 +19,8 @@ import ChangeUsernameForm from "./components/DashBoard/changeusernameform";
 import PlansPage from "./components/DashBoard/planandsunscription";
 import YouTubeEmbed from "./components/DashBoard/frame";
 import Searchbar from "./components/DashBoard/searchbar";
+import UpgradePage from "./components/DashBoard/upgrade";
+import MyReviews from "./components/DashBoard/myratings";
 const UnrestrictedLayout = () => {
     return (
         <div>
@@ -73,8 +75,23 @@ const router = createBrowserRouter([
             {path:"planspage",element:<PlansPage/>},
             {path: "frame",element:<YouTubeEmbed/>},
             {path:"searchbar",element:<Searchbar/>},
+            {path:"upgrade",element:<UpgradePage/>},
+            
         ],
     },
+
+    {
+        path: "/usr",
+        element: (
+            <SecurityLayer>
+                <Outlet />
+            </SecurityLayer>
+        ),
+        children: [
+            { index: true, element: <MyReviews /> },
+        ],
+    }
+    
     
 ]);
 

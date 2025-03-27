@@ -9,7 +9,7 @@ import authMiddleware from "./middleware/authmiddleware.js"
 import moviesRoutes  from "./routes/searchRouter.js";
 import movieAccessRoutes from "./routes/movieaccessRouter.js"
 import wattchlistRoutes from "./routes/watchlistRoutes.js"
-
+import ratingRoutes from "./routes/ratingRouter.js"
 dotenv.config();
 
 
@@ -30,6 +30,7 @@ app.use('/subscription',subscriptionRoutes);
 app.use('/movies',moviesRoutes);
 app.use('/movieaccess',movieAccessRoutes) //latest added route for movieaccess checking
 app.use('/watchlist',wattchlistRoutes)
+app.use('/rating',ratingRoutes)
 
 
 

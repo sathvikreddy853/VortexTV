@@ -27,7 +27,9 @@ const Home = () => {
                     <NavLink to="/dashboard/watchlist" label="Watchlist" location={location} />
                     <NavLink to="/dashboard/planspage" label="Plans" location={location} />
                     <NavLink to ="/dashboard/searchbar" label="Search" location={location} />
-                </nav>
+                    <NavLink to ="/dashboard/upgrade" label="Upgrade" location={location} />
+                    <NavLink to="/usr" label="My Reviews" location={location} />
+                    </nav>
             </div>
 
             {/* Main Content */}

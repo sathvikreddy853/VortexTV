@@ -31,6 +31,11 @@ const Login = () => {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 console.log(JSON.stringify(data.user));
                 navigate('/dashboard');
+
+                if (!data.stillSubscribed) {
+                    alert("Your subscription has expired. Please subscribe again.");
+                }
+                
             } 
             else 
             {

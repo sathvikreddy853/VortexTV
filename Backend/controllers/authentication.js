@@ -3,6 +3,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Subscription from "../models/subscription.js";
 
 const authController = 
 {
@@ -81,7 +82,32 @@ const authController =
                 }
             );
 
-            // frankly speaking user object should nnot be sent only token is enough but my complete backend just pretends to have security where infact it dosent
+            let stillSubscribed = true;
+
+            if(await Subscription.isUserSubscribed(user.user_id))
+            {
+                let endDate = await Subscription.getEndDate(user.user_id);
+                console.log(" here i am ")
+                if(new Date(endDate) < new Date())
+                {
+
+                    stillSubscribed=false;
+                    const resultant = await Subscription.deleteSubscription(user.user_id);
+                    if(!resultant)
+                    {
+                        // this hsould not happen
+                        console.log("reached unwanted place  ,correct your code, from authentication.js controller");
+                        return res.status(400).json("some codeproblem");
+                    }
+                }
+
+            }
+
+
+            //here test for users subscription status
+            
+
+            // frankly speaking user object should nnot be sent only token is enough but our complete backend just pretends to have security where infact it dosent have much security
             res.json
             ({
                 token,
@@ -91,6 +117,7 @@ const authController =
                     name: user.name,
                     email: user.email,
                 },
+                stillSubscribed
             }); 
         } 
         catch (error) 

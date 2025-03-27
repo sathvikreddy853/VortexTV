@@ -76,7 +76,78 @@ const SubscriptionController = {
             console.error("Error getting subscription details:", error);
             return res.status(500).json({ message: "Internal server error" });
         }
+    },
+    updateSubscription: async (req, res) => {
+        try {
+            const { user_id, plan_id, duration } = req.body;
+    
+            //  Check if the user is already subscribed
+            const isSubscribed = await Subscription.isUserSubscribed(user_id);
+    
+            if (isSubscribed) 
+            {
+                //Get current subscription details
+                const currentSubscription = await Subscription.findSubscriptionByUserId(user_id);
+                console.log("Current subscription", currentSubscription, plan_id);
+    
+                const currentPlanId = currentSubscription.plan_id;
+                const currentEndDate = new Date(currentSubscription.end_date); // Ensure it's a Date object
+                const now = new Date();
+                let changedInDb = false;
+    
+                const currentPlanNumber = parseInt(currentPlanId.split("_")[1]);
+                const requestedPlanNumber = parseInt(plan_id.split("_")[1]);
+    
+                if (currentPlanNumber === requestedPlanNumber) 
+                {
+                    console.log("Entering same plan check");
+    
+                    //  If the plan is the same, check if the subscription has expired
+                    if (currentEndDate < now) 
+                    {
+                        // If expired, delete the existing subscription and add a new one
+                        changedInDb = true;
+                        await Subscription.deleteSubscription(user_id);
+                        await Subscription.addUserSubscription(user_id, plan_id, duration);
+                        return res.status(200).json({ message: "Subscription renewed with the same plan after expiration.", changedInDb });
+                    } 
+                    else 
+                    {
+                        // Inform user that they are already subscribed with the end date in Indian format (DD-MM-YYYY)
+                        const formattedDate = currentEndDate.toLocaleDateString("en-IN");
+                        return res.status(200).json({ message: `You are already subscribed to this Plan, your subscription will end at ${formattedDate}`, changedInDb });
+                    }
+                } 
+                else if (currentPlanNumber < requestedPlanNumber) 
+                {
+                    // If switching to a higher plan, delete the old subscription and add a new one
+                    changedInDb = true;
+                    await Subscription.deleteSubscription(user_id);
+                    await Subscription.addUserSubscription(user_id, plan_id, duration);
+                    return res.status(200).json({ message: "Subscription updated to a new plan.", changedInDb });
+                }
+                else 
+                {
+                    // User is trying to downgrade their plan, which isn't allowed
+                    const formattedDate = currentEndDate.toLocaleDateString("en-IN");
+                    return res.status(200).json({ message: `You are already subscribed to a higher Plan, your subscription will end at ${formattedDate}`, changedInDb });
+                }
+            } 
+            else 
+            {
+                // Step 5: If the user has no subscription, add a new one
+                let changedInDb = true;
+                await Subscription.addUserSubscription(user_id, plan_id, duration);
+                return res.status(200).json({ message: "New subscription added.", changedInDb });
+            }
+        } 
+        catch (error) 
+        {
+            console.error("Error updating subscription:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+        }
     }
+    
     
 
 };

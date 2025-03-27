@@ -9,7 +9,7 @@ const Genres = {
     {
         try 
         {
-            console.log("GenreId recieved is :" , GenreId)
+            console.log("GenreId recieved is (from getGenreName):" , GenreId)
             const [rows] = await pool.execute(
                 'SELECT name FROM Genres WHERE genre_id = ?',
                 [GenreId]

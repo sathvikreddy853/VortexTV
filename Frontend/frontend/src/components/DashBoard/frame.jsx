@@ -57,18 +57,66 @@ const YouTubeEmbed = () => {
             const data = await response.json();
             setOpenSnackbar(true);
             setMessage(response.ok ? `Movie ${PresentMovie.title} added to watchlist!` : "Movie is not added to watchlist!");
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             console.error("Error adding movie to watchlist:", error);
         }
     };
 
-    const handleSubmitRatingReview = () => {
-        setMessage(`You rated ${rating}/10! Review: "${review}"`);
+
+
+    //-----------------------------------------------------------------------------------------------------------
+    const handleSubmitRatingReview = async () => 
+    {
+        const user = localStorage.getItem("user");
+        if (!user) 
+        {
+            setMessage("User not logged in!");
+            setOpenSnackbar(true);
+            return;
+        }
+    
+        const { user_id } = JSON.parse(user);
+        const movie_id = PresentMovie?.movie_id;
+    
+        if (!movie_id) 
+        {
+            setMessage("Invalid movie data!");
+            setOpenSnackbar(true);
+            return;
+        }
+    
+        try {
+            const response = await fetch("http://localhost:3000/rating/addrating", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(
+                    { user_id, movie_id, rating, review }
+                ),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                setMessage(`You rated ${rating}/10! Review: "${review}"`);
+            } else {
+                setMessage(data.message || "Failed to submit rating & review");
+            }
+        } catch (error) {
+            console.error("Error submitting rating & review:", error);
+            setMessage("An error occurred while submitting your review.");
+        }
+    
         setOpenSnackbar(true);
         setOpenRatingReview(false);
         setReview(""); // Reset review after submission
     };
-
+    //-------------------------------------------------------------------------------------------------------------
+    
     const handleCloseSnackbar = () => setOpenSnackbar(false);
     const videoId = videoLink ? getVideoId(videoLink) : null;
     
@@ -95,7 +143,7 @@ const YouTubeEmbed = () => {
 
                 <div className="p-4">
                     <p className="text-gray-400">
-                        {expanded ? `The Movie Name is ${PresentMovie.title}. Released in ${PresentMovie?.release_year}, runs for ${PresentMovie?.duration} minutes, rated ${PresentMovie?.rating} on IMDB. Language is ${PresentMovie?.language}.` : "This is a short description..."}
+                        {expanded ? `The Movie Name is ${PresentMovie.title}. Released in ${PresentMovie?.release_year}, runs for ${PresentMovie?.duration} minutes, rated ${PresentMovie?.rating} on IMDB.` : "This is a short description..."}
                         <span className="text-blue-400 cursor-pointer ml-2" onClick={() => setExpanded(!expanded)}>
                             {expanded ? "Show less" : "Read more"}
                         </span>
