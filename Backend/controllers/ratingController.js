@@ -4,21 +4,36 @@ const RatingController = {
     // 1. Add a new rating
     addRating: async (req, res) => {
         const { user_id, movie_id, rating, review } = req.body;
+    
         try {
-            const success = await MovieRating.addRating(user_id, movie_id, rating, review);
-            if (success) {
-                res.status(201).json({ message: "Rating added successfully" });
+            // Check if the user has already rated the movie
+            const existingRating = await MovieRating.getUserRatingForMovie(user_id, movie_id);
+    
+            if (existingRating) {
+                // If rating exists, update it
+                const updated = await MovieRating.updateRating(user_id, movie_id, rating, review);
+                if (updated) {
+                    return res.status(200).json({ message: "Rating updated successfully" });
+                } else {
+                    return res.status(400).json({ message: "Failed to update rating" });
+                }
             } else {
-                res.status(400).json({ message: "Failed to add rating" });
+                // If no rating exists, add a new one
+                const success = await MovieRating.addRating(user_id, movie_id, rating, review);
+                if (success) {
+                    return res.status(201).json({ message: "Rating added successfully" });
+                } else {
+                    return res.status(400).json({ message: "Failed to add rating" });
+                }
             }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     },
-
+    
     // 2. Delete a rating based on user_id and movie_id
     deleteRating: async (req, res) => {
-        const { user_id, movie_id } = req.params;
+        const { user_id, movie_id } = req.body;
         try {
             const success = await MovieRating.deleteRating(user_id, movie_id);
             if (success) {
@@ -48,6 +63,7 @@ const RatingController = {
         const { user_id, movie_id } = req.params;
         const { rating, review } = req.body;
         try {
+            console.log("from updtaerating ,params are :", user_id, movie_id, rating, review);
             const success = await MovieRating.updateRating(user_id, movie_id, rating, review);
             if (success) {
                 res.status(200).json({ message: "Rating updated successfully" });
