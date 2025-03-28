@@ -182,7 +182,8 @@ const authController =
             try 
             {
                 decoded = jwt.verify(token, "your-secret-key");
-            } catch (err) 
+            } 
+            catch (err) 
             {
                 const errorMessage =
                     err.name === "TokenExpiredError" ? "Token expired" :

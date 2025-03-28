@@ -2,8 +2,14 @@ import React, { useEffect, useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Slider, TextField, Snackbar, Typography } from '@mui/material';
 import GenresTag from "./smallcomponents/genreTag";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 
-const YouTubeEmbed = () => {
+
+// it explicitly dosent need any thing give what should be given to movie card and it manages appropriately
+
+const YouTubeEmbed = () => 
+{
     const [videoLink, setVideoLink] = useState(null);
     const [PresentMovie, setPresentMovie] = useState(null);
     const [rating, setRating] = useState(5);
@@ -22,24 +28,41 @@ const YouTubeEmbed = () => {
     let movieId = PresentMovie?.movie_id
 
 
-    
+
     useEffect(() => {
         const fetchLikeStatus = async () => {
+
+            const movieObject = sessionStorage.getItem("thisMovie");
+            let parsedMovie = ""
+            if (movieObject) {
+                try {
+                    parsedMovie = JSON.parse(movieObject);
+                } catch (error) {
+                    console.error("Error parsing movie object:", error);
+                }
+            }
+
+
             try {
-                const response = await fetch("/like/fetchlikestatus", {
+                console.log(userId, parsedMovie.movie_id);
+
+                const response = await fetch("http://localhost:3000/like/fetchlikestatus", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" 
+                    headers: {
+                        "Content-Type": "application/json"
                         , "Authorization": `Bearer ${localStorage.getItem("token")}`
                     },
-                    body: JSON.stringify({ user_id: userId, movie_id: movieId })
+                    body: JSON.stringify({ user_id: userId, movie_id: parsedMovie.movie_id })
                 });
 
                 const data = await response.json();
-                if (data.likeStatus) 
-                {
+                if (data?.message) {
+                    console.log(data.message)
+                }
+                if (data.likeStatus) {
                     setLikeStatus(data.likeStatus);
-                } else 
-                {
+                    // console.log("Like status:,dataLikeStatus:", likeStatus, data.likeStatus); //this apparant anomoly is due to reacts algo
+                } else {
                     setLikeStatus(1); // Neutral if no record found
                 }
             } catch (error) {
@@ -48,7 +71,7 @@ const YouTubeEmbed = () => {
         };
 
         fetchLikeStatus();
-    }, [userId, movieId]);
+    }, [userId]);
 
 
 
@@ -63,7 +86,7 @@ const YouTubeEmbed = () => {
     useEffect(() => {
         const storedLink = sessionStorage.getItem("videoLink");
         const movieObject = sessionStorage.getItem("thisMovie");
-    
+
         if (storedLink) setVideoLink(storedLink);
         if (movieObject) {
             try {
@@ -74,73 +97,170 @@ const YouTubeEmbed = () => {
             }
         }
     }, []);
-    
-   
-        
+
+    //-------------------------------------------------------------------------------------------------------
     const onClickLikeHandler = async () => {
         let newStatus = 1// Toggle between liked and neutral
+        let changeLikeStatus = 0
+        let changeDislikeStatus = 0
 
-        if(likeStatus===1)
+        if (likeStatus === 1) //neutral ->like
         {
-            newStatus=2
+            console.log("neutral->like")
+            newStatus = 2
             // here increase like count in popularity
+            changeDislikeStatus = 0 //nochange
+            changeLikeStatus = 1 //+1
         }
-        else if(likeStatus===2)
+        else if (likeStatus === 2) //like->neutral
         {
-            newStatus=1
-            //here decrease liek count in popularity
+            console.log("like->neutral")
+            newStatus = 1
+            //here decrease like count in popularity
+            changeDislikeStatus = 0 //nochange
+            changeLikeStatus = -1 //-1
         }
-        else if(likeStatus===3)
+        else if (likeStatus === 3) // dislike ->like
         {
-            newStatus=2
+            console.log("dislike->like")
+            newStatus = 2
             // here increase like count in popularity and decrease dislike count
+            changeDislikeStatus = -1 //-1
+            changeLikeStatus = 1 //+1
         }
 
+        //call to popularity updation
 
-        try 
-        {
-            await fetch("/changelikestatus", 
-                {
+        try {
+            const response = await fetch("http://localhost:3000/popularity/changeLikeDislike", {
                 method: "POST",
-                headers: { "Content-Type": "application/json"
-                    , "Authorization": `Bearer ${localStorage.getItem("token")}`
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
                 },
-                body: JSON.stringify({ user_id: userId, movie_id: movieId, likestatus: newStatus })
+                body: JSON.stringify({
+                    movie_id: movieId,
+                    changeLike: changeLikeStatus,
+                    changeDislike: changeDislikeStatus
+                })
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to update like/dislike status");
+            }
+
+            const data = await response.json();
+
+        }
+        catch (error) {
+            console.error("Error updating like/dislike:", error.message);
+            return { success: false, message: error.message };
+        }
+
+        // call to User_Likes updation
+
+        try {
+            const res1 = await fetch("http://localhost:3000/like/changelikestatus",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                        , "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({ user_id: userId, movie_id: movieId, likestatus: newStatus })
+                });
+
+            const data = await res1.json();
+            if (!res1.ok || !data.success) {
+                throw new Error(data.message)
+            }
             setLikeStatus(newStatus);
         } catch (error) {
             console.error("Error updating like status:", error);
         }
     };
 
+    //--------------------------------------------------------------------------------------------
     // Handler for Dislike button
     const onClickDislikeHandler = async () => {
-        let newStatus = 1
-        // Toggle between disliked and neutral
+        let newStatus = 1// Toggle between liked and neutral
+        let changeLikeStatus = 0
+        let changeDislikeStatus = 0
 
-        if(likeStatus===1)
+
+        if (likeStatus === 1) // neutral -> dislike
         {
-            newStatus=3
+            newStatus = 3
+            console.log("neutral->disliked")
+            changeDislikeStatus = 1 //+1
+            changeLikeStatus = 0 //nochange
             // here increase dislike count in popularity
         }
-        else if(likeStatus===2)
+        else if (likeStatus === 2) // like -> dislike
         {
-            newStatus=1
+            console.log("like->disliked")
+
+            newStatus = 3
+            changeDislikeStatus = 1 //+1
+            changeLikeStatus = -1 //-1
             //here decrease like count in popularity
             //here increase like count in popularity
         }
-        else if(likeStatus===3)
+        else if (likeStatus === 3) // dislike -> neutral
         {
-            newStatus=1
+            console.log("dislike->neutral")
+
+            newStatus = 1
+            changeDislikeStatus = -1 //-1
+            changeLikeStatus = 0 //nochange
             // here decrease dislike count in popularity also
         }
 
+
+        // handling popularity table update
+
         try {
-            await fetch("/changelikestatus", {
+            const response = await fetch("http://localhost:3000/popularity/changeLikeDislike", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId, movie_id: movieId, likestatus: newStatus })
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify({
+                    movie_id: movieId,
+                    changeLike: changeLikeStatus,
+                    changeDislike: changeDislikeStatus
+                })
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to update like/dislike status");
+            }
+
+            const data = await response.json();
+
+        }
+
+        catch (error) {
+            console.error("Error updating like/dislike:", error.message);
+            return { success: false, message: error.message };
+        }
+
+
+
+        // handling User_Likes table update
+        try {
+            await fetch("http://localhost:3000/like/changelikestatus",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                        , "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify({ user_id: userId, movie_id: movieId, likestatus: newStatus })
+                });
             setLikeStatus(newStatus);
         } catch (error) {
             console.error("Error updating dislike status:", error);
@@ -148,51 +268,21 @@ const YouTubeEmbed = () => {
     };
 
 
+    //------------------------------------------------------------------------------------------------------------
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     const getVideoId = (url) => {
         const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
         const match = url?.match(regExp);
         return match?.[2]?.length === 11 ? match[2] : null;
     };
-    
+
     const handleAddToWatchlist = async () => {
-    const movie_id = PresentMovie?.movie_id;
+        const movie_id = PresentMovie?.movie_id;
+        const user_id = user.user_id
         try {
             const response = await fetch("http://localhost:3000/watchlist/add", {
                 method: "POST",
@@ -240,9 +330,8 @@ const YouTubeEmbed = () => {
             const data = await response.json();
             setMessage(response.ok ? `You rated ${rating}/10! Review: "${review}"` : data.message || "Failed to submit rating.");
 
-           // Refresh reviews after submitting
-        } catch (error) 
-        {
+            // Refresh reviews after submitting
+        } catch (error) {
             console.error("Error submitting rating & review:", error);
             setMessage("An error occurred.");
         }
@@ -252,7 +341,10 @@ const YouTubeEmbed = () => {
         setReview("");
     };
 
-    const handelviewReviews= async () => {
+
+    // handel-reviews
+    //---------------------------------------------------------------------------------------------------------
+    const handelviewReviews = async () => {
         const movie_id = PresentMovie?.movie_id;
         if (!movie_id) {
             setMessage("Invalid movie data!");
@@ -260,14 +352,16 @@ const YouTubeEmbed = () => {
             return;
         }
 
-            navigate(`/dashboard/moviereviews/${movie_id}`);
-}
+        navigate(`/dashboard/moviereviews/${movie_id}`);
+    }
+
+        //---------------------------------------------------------------------------------------------------------
+
 
     const handleCloseSnackbar = () => setOpenSnackbar(false);
     const videoId = videoLink ? getVideoId(videoLink) : null;
 
-    if (!videoId) 
-    {
+    if (!videoId) {
         return (
             <div className="flex items-center justify-center min-h-screen text-white">
                 <p className="text-2xl font-semibold">Invalid YouTube link or access denied.</p>
@@ -318,23 +412,42 @@ const YouTubeEmbed = () => {
                 </div>
 
 
-                                {/* Like & Dislike Section */}
+                {/* Like & Dislike Section */}
                 <div className="flex justify-center items-center gap-6 p-4">
                     <Button
                         variant="contained"
-                        className="bg-green-500 hover:bg-green-400 text-white rounded-lg transition duration-200"
-                        onClick={onClickLikeHandler} // Empty handler
+                        sx={{
+                            backgroundColor: likeStatus === 2 ? "#86EFAC" : "#2563EB", 
+                            "&:hover": {
+                                backgroundColor: likeStatus === 2 ? "#86EFAC" : "#B91C1C", 
+                            },
+                            color: "white",
+                        }}
+                        onClick={onClickLikeHandler}
+                        startIcon={<ThumbUpIcon />}
                     >
-                        👍 Like
+                        Like
                     </Button>
+
                     <Button
                         variant="contained"
-                        className="bg-red-500 hover:bg-red-400 text-white rounded-lg transition duration-200"
-                        onClick={() => {onClickDislikeHandler}} // Empty handler
+                        sx={{
+                            backgroundColor: likeStatus === 3 ? "#86EFAC" : "##2563EB", 
+                            "&:hover": {
+                                backgroundColor: likeStatus === 3 ? "#86EFAC" : "#B91C1C", 
+                            },
+                            color: "white",
+                        }}
+                        onClick={onClickDislikeHandler}
+                        startIcon={<ThumbDownIcon />}
                     >
-                        👎 Dislike
+                        Dislike
                     </Button>
                 </div>
+
+
+
+
 
 
 

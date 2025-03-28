@@ -1,8 +1,7 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => 
-    {  
+{  
     const token = req.headers.authorization?.split(" ")[1]; // removing bearer 
 
     //w hy barer is put : dont know the reason but its a convention (source youtube)

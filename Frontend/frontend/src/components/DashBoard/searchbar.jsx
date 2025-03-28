@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MovieCard from "./moviecard";
 import { motion } from "framer-motion";
-import useDebounce from "../hooks"; // Importing the debounce hook
+import useDebounce from "../hooks";
 
 const SearchBar = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -105,15 +105,15 @@ const SearchBar = () => {
             )}
 
             {/* Search Result Area */}
-            <div className="w-full max-w-2xl mt-5 max-h-96 overflow-y-auto scrollbar-hide">
-                <h2 className="text-xl font-semibold mb-2 text-white">Search Results:</h2>
-                <div className="grid gap-4 w-full">
+            <div className="w-full max-w-3xl mt-5 max-h-[600px] overflow-y-auto scrollbar-hide p-4"> {/* Increased max-w and max-h, added padding */}
+                <h2 className="text-xl font-semibold mb-4 text-white">Search Results:</h2> {/* Increased margin bottom */}
+                <div className="grid gap-6 w-full"> {/* Increased gap */}
                     {errorMessage ? (
                         <p className="text-gray-300 text-center">{errorMessage}</p>
                     ) : searchResult.length === 0 ? (
                         <p className="text-gray-300 text-center">Start typing to search...</p>
                     ) : (
-                        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"> {/* Increased gap, added lg:grid-cols-4 */}
                             {searchResult.map((movie, index) => (
                                 <MovieCard
                                     key={index}
@@ -126,7 +126,6 @@ const SearchBar = () => {
                     )}
                 </div>
             </div>
-
         </div>
     );
 };

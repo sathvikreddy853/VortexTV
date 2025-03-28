@@ -56,6 +56,8 @@ const UserLikeController = {
     fetchLikestatus: async (req, res) => {
         try {
             const { user_id, movie_id } = req.body;
+            console.log("user_id:", user_id);
+            console.log("movie_id:", movie_id);
 
             if (!user_id || !movie_id) {
                 return res.status(400).json({ success: false, message: "Missing parameters" });

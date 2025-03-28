@@ -4,14 +4,10 @@ import image from "./img.jpg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-
-
-// expects props as movieInfo and link  
 function MovieCard(props) {
     const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
 
-    // this checks wether user can access this movie or not thats it
     const clickHandler = async (e) => {
         e.preventDefault();
 
@@ -29,15 +25,13 @@ function MovieCard(props) {
 
         const data = await response.json();
 
-        if (response.ok)
-        {
+        if (response.ok) {
             if (data.access) 
             {
                 sessionStorage.setItem('videoLink', props?.link);
-                sessionStorage.setItem('thisMovie',JSON.stringify(props?.movieInfo))
+                sessionStorage.setItem('thisMovie', JSON.stringify(props?.movieInfo));
                 navigate('/dashboard/frame');
-            } 
-            else 
+            } else 
             {
                 setShowPopup(true);
             }
@@ -46,19 +40,21 @@ function MovieCard(props) {
 
     return (
         <>
-            {/* Movie Card */}
             <Card
                 onClick={clickHandler}
-                
                 style={{
-                    width: '10rem',
-                    borderRadius: '10px',
+                    width: "180px",
+                    height: "280px",
+                    borderRadius: '8px',
                     overflow: 'hidden',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-                    transition: 'transform 1s ease-in-out',
+                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                    transition: 'transform 0.3s ease-in-out',
                     backgroundColor: '#222',
                     color: 'white',
-                    margin: "8px"
+                    margin: "5px",
+                    cursor: "pointer",
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}
                 className="hover:scale-105"
             >
@@ -68,20 +64,22 @@ function MovieCard(props) {
                     alt="Movie Poster"
                     style={{
                         width: '100%',
-                        height: '200px',
+                        height: '70%',
                         objectFit: 'cover',
-                        borderTopLeftRadius: "10px",
-                        borderTopRightRadius: "10px",
+                        borderTopLeftRadius: "8px",
+                        borderTopRightRadius: "8px",
                     }}
                 />
 
-                <Card.Body className="text-center" style={{ padding: '10px' }}>
-                    <Card.Title style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+                <Card.Body className="text-center" style={{ padding: '8px', flexGrow: 1 }}>
+                    <Card.Title style={{ fontSize: "0.95rem", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {props?.movieInfo?.title}
                     </Card.Title>
-                    <Card.Text style={{ fontSize: "0.9rem", color: "#ddd" }}>
-                        Duration : {`${props?.movieInfo?.duration} mins`}
+                    <Card.Text style={{ fontSize: "0.75rem", color: "#ddd" }}>
+                        {`${props?.movieInfo?.duration} mins`}
                     </Card.Text>
+
+
                     <Button
                         variant="danger"
                         style={{
@@ -99,24 +97,23 @@ function MovieCard(props) {
                 </Card.Body>
             </Card>
 
-            {/* Popup Modal */}
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
-                        <h3 className="text-lg font-semibold text-gray-800">
+                    <div className="bg-white p-5 rounded-lg shadow-lg text-center max-w-sm">
+                        <h3 className="text-md font-semibold text-gray-800">
                             Access Denied
                         </h3>
-                        <p className="text-gray-600 mt-2">
+                        <p className="text-gray-600 mt-2 text-sm">
                             You need to upgrade your plan to watch this movie.
                         </p>
-                        <div className="flex justify-center gap-4 mt-4">
+                        <div className="flex justify-center gap-3 mt-4">
                             <button
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                                className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm"
                                 onClick={() => navigate("/dashboard/planspage")}>
                                 Renew Plan
                             </button>
                             <button
-                                className="bg-gray-300 px-4 py-2 rounded-md"
+                                className="bg-gray-300 px-4 py-2 rounded-md text-sm"
                                 onClick={() => setShowPopup(false)}>
                                 Close
                             </button>

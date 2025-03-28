@@ -5,8 +5,7 @@ const router = express.Router();
 
 router.post("/getLikes", PopularityController.getLikeCount);
 router.post("/getDislikes", PopularityController.getDislikeCount);
-router.post("/getPopularity", PopularityController.fetchRow);
-router.post("/incLike", PopularityController.addLike);
-router.post("/incDislike", PopularityController.addDislike);
+router.post("/getPopularityRow", PopularityController.fetchRow);
+router.post("/changeLikeDislike", PopularityController.changeLikeDislike);
 
 export default router;

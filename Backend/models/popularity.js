@@ -80,15 +80,19 @@ const Popularity = {
         }
     },
 
-    increaseLikeCount: async (movie_id) => 
-    {
+    
+  
+
+    //returns object with key's success and again the updateRow
+    changeLikeDislike : async (movie_id, changeLike, changeDislike) => {
         try {
             const [updateResult] = await pool.execute(
-                'UPDATE Popularity SET like_count = like_count + 1 WHERE movie_id = ?',
-                [movie_id]
+                'UPDATE Popularity SET like_count = like_count + ?, dislike_count = dislike_count + ? WHERE movie_id = ?',
+                [changeLike, changeDislike, movie_id]
             );
     
-            if (updateResult.affectedRows === 0) {
+            if (updateResult.affectedRows === 0) 
+            {
                 return { success: false, message: "No rows updated. Movie ID may not exist." };
             }
     
@@ -100,34 +104,11 @@ const Popularity = {
             return { success: true, updatedRow: updatedRow[0] };
         } 
         catch (error) {
-            console.error('Error adding like:', error);
-            throw error;
-        }
-    },
-    
-    increaseDislikeCount: async (movie_id) => {
-        try {
-            const [updateResult] = await pool.execute(
-                'UPDATE Popularity SET dislike_count = dislike_count + 1 WHERE movie_id = ?',
-                [movie_id]
-            );
-    
-            if (updateResult.affectedRows === 0) {
-                return { success: false, message: "No rows updated. Movie ID may not exist." };
-            }
-    
-            const [updatedRow] = await pool.execute(
-                'SELECT * FROM Popularity WHERE movie_id = ?',
-                [movie_id]
-            );
-    
-            return { success: true, updatedRow: updatedRow[0] };
-        } 
-        catch (error) {
-            console.error('Error adding dislike:', error);
+            console.error('Error updating like/dislike counts:', error);
             throw error;
         }
     }
+    
     
 };
 

@@ -29,6 +29,7 @@ const Home = () => {
                     <NavLink to ="/dashboard/searchbar" label="Search" location={location} />
                     <NavLink to ="/dashboard/upgrade" label="Upgrade" location={location} />
                     <NavLink to="/usr" label="My Reviews" location={location} />
+                    <NavLink to ="/usr/genrefilterpage" label="Genre Filter" location={location} />
                     </nav>
             </div>
 

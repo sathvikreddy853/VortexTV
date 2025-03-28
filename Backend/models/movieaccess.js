@@ -56,6 +56,13 @@ const MovieAccess = {
                 throw new Error("Failed to retrieve movie details");
             }
         }
+
+        
+
+
+        // recomended movies
+
+
         
 
 }

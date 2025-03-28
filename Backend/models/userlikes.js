@@ -11,15 +11,19 @@ const User_Likes = {
                     [user_id, movie_id]
                 );
         
-                if (existing.length > 0) {
-                    if (likestatus === 1) {
+                if (existing.length > 0) 
+                {
+                    if (likestatus === 1) 
+                    {
+                        console.log("i am entering here that is likestatus 1 in controller")
                         // If likestatus is 1, remove the reaction
                         const [result] = await pool.execute(
                             "DELETE FROM User_Likes WHERE user_id = ? AND movie_id = ?",
                             [user_id, movie_id]
                         );
                         return { success: true, message: "Like/Dislike removed", deletedRow: result };
-                    } else {
+                    } else 
+                    {
                         // Update with new likestatus
                         const [result] = await pool.execute(
                             "UPDATE User_Likes SET likestatus = ? WHERE user_id = ? AND movie_id = ?",

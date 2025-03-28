@@ -1,6 +1,6 @@
 import MovieAccess from "../models/movieaccess.js";
 import Subscription from "../models/subscription.js";
-
+import Genres from "../models/Genres.js";
 
 
 const MovieAccessController = {
@@ -84,7 +84,35 @@ const MovieAccessController = {
             console.error('Error finding movie by movie_id from getList of movieaccesscontroller:', error);
             return res.status(500).json({ message: 'Internal server error from getList of movieaccesscontroller' });
         }
+    },
+
+
+    getMoviesByGenres: async (req, res) => 
+    {
+        try 
+        {
+            const { genreList } = req.body // Expecting genres as query parameter (e.g., ?genres=Action,Drama)
+
+            if (!genreList) 
+            {
+                return res.status(400).json({ error: "Genres parameter is required" });
+            }
+
+            console.log("Received genre list:", genreList);
+
+            const movies = await Genres.getMoviesByGenres(genreList);
+
+            res.status(200).json({ success: true, movies: movies });
+        } 
+        catch (error) {
+            console.error("Error in fetching movies:", error.message);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
     }
+
+
+    // recomendations
+    
 }
 
 

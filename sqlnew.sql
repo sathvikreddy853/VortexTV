@@ -92,3 +92,27 @@ CREATE TABLE MovieGenres (
 | rating       | decimal(3,1) | YES  |     | NULL    |       |
 | source_link  | varchar(255) | NO   |     | NULL    |       |
 +--------------+--------------+------+-----+---------+-------+
+
+
+
+const selectedGenres = ["Action", "Comedy", "Drama"]; // Example genres
+const genreList = selectedGenres.map(g => `'${g}'`).join(",");
+
+const sqlQuery = `
+WITH FilteredMovies AS (
+    SELECT mg.movie_id
+    FROM MovieGenres mg
+    JOIN Genres g ON mg.genre_id = g.genre_id
+    WHERE g.name IN (${genreList})
+    GROUP BY mg.movie_id
+    HAVING COUNT(DISTINCT g.name) = ${selectedGenres.length}
+)
+SELECT m.movie_id, m.title, m.release_year, m.duration, m.rating, m.source_link,
+       (0.8 * COALESCE(l.like_count, 0) - 0.2 * COALESCE(l.dislike_count, 0)) AS popularity_score
+FROM Movies m
+JOIN FilteredMovies fm ON m.movie_id = fm.movie_id
+LEFT JOIN MovieLikes l ON m.movie_id = l.movie_id
+ORDER BY popularity_score DESC;
+`;
+
+console.log(sqlQuery);

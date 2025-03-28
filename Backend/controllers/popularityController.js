@@ -60,47 +60,31 @@ const PopularityController =
     },
 
 
-    addLike: async (req, res) => 
+    changeLikeDislike: async (req, res) => 
     {
         try {
-            const { movie_id } = req.body;
-            if (!movie_id) {
-                return res.status(400).json({ success: false, message: "movie_id is required" });
+            const { movie_id, changeLike, changeDislike } = req.body;
+
+            if (!movie_id || changeLike === undefined || changeDislike === undefined) 
+            {
+                return res.status(400).json({ success: false, message: "Invalid input parameters" });
             }
 
-            const result = await Popularity.increaseLikeCount(movie_id);
-            if (!result.success) {
-                return res.status(404).json({ success: false, message: result.message });
+            const result = await Popularity.changeLikeDislike(movie_id, changeLike, changeDislike);
+
+            if (!result.success) 
+            {
+                return res.status(404).json({ success: false, message: "Movie ID not found" });
             }
 
-            return res.status(200).json({ success: true, updatedRow: result.updatedRow });
+            res.status(200).json({ success: true, updatedData: result.updatedRow });  //final return 
         } 
-        catch (error) {
-            console.error("Error in addLike:", error);
-            return res.status(500).json({ success: false, message: "Internal Server Error" });
-        }
-    },
-
-    addDislike: async (req, res) => 
-    {
-        try {
-            const { movie_id } = req.body;
-            if (!movie_id) {
-                return res.status(400).json({ success: false, message: "movie_id is required" });
-            }
-
-            const result = await Popularity.increaseDislikeCount(movie_id);
-            if (!result.success) {
-                return res.status(404).json({ success: false, message: result.message });
-            }
-
-            return res.status(200).json({ success: true, updatedRow: result.updatedRow });
-        } 
-        catch (error) {
-            console.error("Error in addDislike:", error);
-            return res.status(500).json({ success: false, message: "Internal Server Error" });
+        catch (error) 
+        {
+            res.status(500).json({ success: false, message: "Server error", error: error.message });
         }
     }
+
 
 };
 
