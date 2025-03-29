@@ -22,7 +22,7 @@ const Home = () => {
                 <h2 className="text-3xl font-bold mb-6 text-center tracking-wide">Dashboard</h2>
 
                 <nav className="space-y-4">
-                    <NavLink to="/dashboard" label="Home" location={location} />
+                    <NavLink to="/dashboard" label="Recommendations" location={location} />
                     <NavLink to="/dashboard/profile" label="Profile" location={location} />
                     <NavLink to="/dashboard/watchlist" label="Watchlist" location={location} />
                     <NavLink to="/dashboard/planspage" label="Plans" location={location} />
