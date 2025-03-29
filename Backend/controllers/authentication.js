@@ -167,7 +167,8 @@ const authController =
         }
     },
 
-    validate: async (req, res) => {
+    validate: async (req, res) => 
+    {
         try {
                 const token = req.headers.authorization?.split(" ")[1];
                 // console.log("token in  backendis :",token)

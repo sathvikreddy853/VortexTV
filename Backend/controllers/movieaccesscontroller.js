@@ -108,11 +108,70 @@ const MovieAccessController = {
             console.error("Error in fetching movies:", error.message);
             res.status(500).json({ error: "Internal Server Error" });
         }
-    }
+    },
+
+    getRecommendedMovies: async (req, res) => 
+    {
+        try 
+        {
+                const recommendedMovies = await MovieAccess.getRecommendedMovies();
+                res.status(200).json({ success: true, recommendedMovies });
+        }
+        catch (error) 
+        {
+                console.error("Error in fetching recommended movies:", error.message);
+                res.status(500).json({ error: "Internal Server Error" });
+        }
+    },
+
+
+    addToWatchHistory: async (req, res) =>
+    {
+        try 
+        {
+            const { user_id, movie_id } = req.body;
+            const result = await MovieAccess.addToWatchHistory(user_id, movie_id);
+            return res.status(200).json({ success: true, message: "Added to watch history", result: result});
+        } 
+        catch (error) 
+        {
+            console.error("Error adding to watch history:", error);
+            return res.status(500).json({ success: false, message: error.message });
+            
+        }
+    },
+
+    fetchwatchHistory: async (req, res) =>
+    {
+        try 
+        {
+            const { user_id } = req.body;
+            const result = await MovieAccess.fetchWatchHistory(user_id);// u get rows from watch_history
+            
+            const rows = await Promise.all
+            (
+                result.map
+                (
+                    async (row) => {
+                    row["genreArray"] = await Genres.getMovieGenresStrings(row.movie_id);
+                    return row; // Return the modified row
+                        }
+                )
+            );
+
+
+            return res.status(200).json({ success: true, watchHistory: result });
+        } 
+        catch (error) 
+        {
+            console.error("Error fetching watch history:", error);
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    },
 
 
     // recomendations
-    
+
 }
 
 

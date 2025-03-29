@@ -1,4 +1,6 @@
-import { useState } from "react";
+// PlansPage.jsx
+import React, { useState } from "react";
+import "./CSS/PlansPage.css"; // Import the custom CSS
 
 // Hardcoded plans
 const plans = [
@@ -12,7 +14,7 @@ export default function PlansPage() {
     const [endDate, setEndDate] = useState(null);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return <p className="text-center text-lg">Please log in to subscribe.</p>;
+    if (!user) return <p className="login-message">Please log in to subscribe.</p>;
 
     const handleSubscribe = async (planId, index) => {
         setMessage("Processing...");
@@ -21,58 +23,54 @@ export default function PlansPage() {
             console.log(planId, user.email, user.user_id);
 
             const token = localStorage.getItem("token");
-            if (!token) 
-            {
+            if (!token) {
                 setMessage("Unauthorized: No token found.");
                 return;
             }
-    
 
-            const response = await fetch("http://localhost:3000/subscription/subscribe", 
-                {
-                    method: "POST",
-                    headers: 
-                        {  "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        },
-                    body: JSON.stringify({ user_id: user.user_id, email: user.email, plan_id: planId, duration: plans[index].duration }),
-                }
-            );
+            const response = await fetch("http://localhost:3000/subscription/subscribe", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    user_id: user.user_id,
+                    email: user.email,
+                    plan_id: planId,
+                    duration: plans[index].duration,
+                }),
+            });
             const data = await response.json();
 
-            if (response.ok) 
-            {
+            if (response.ok) {
                 setMessage("Subscription successful!");
                 setEndDate(data.subscription.end_date);
-            } else 
-            {
+            } else {
                 setMessage(data.message);
             }
-        } 
-        catch (error) 
-        {
+        } catch (error) {
             setMessage("Error processing subscription. Please try again.");
             console.error("Subscription error:", error);
         }
 
-        setTimeout(() => 
-        {
+        setTimeout(() => {
             setMessage("");
             setEndDate(null);
         }, 5000);
     };
 
     return (
-        <div className="container mx-auto flex flex-col items-center justify-center min-h-screen p-4">
-            <h1 className="text-3xl font-bold mb-8 text-center">Choose Your Plan</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {console.log(plans)}
-                    {plans.map((plan, index) => (
-                        
-                    <div key={plan.id} className="w-full max-w-xs sm:max-w-sm bg-white border p-6 rounded-2xl shadow-xl text-center transform hover:scale-105 transition-transform duration-300">
-                        <h2 className="text-2xl font-semibold mb-2 text-blue-600" >{plan.name}</h2>
-                        <p className="text-gray-700 text-lg">{plan.price} Rs / {plan.duration} days</p>
-                        <button  className="mt-6 px-5 py-3 bg-blue-500 text-white rounded-xl font-semibold shadow-md hover:bg-blue-600 transition-all duration-300" onClick={() => handleSubscribe(plan.id, index)}>
+        <div className="plans-container">
+            <h1 className="plans-title">Choose Your Plan</h1>
+            <div className="plans-grid">
+                {plans.map((plan, index) => (
+                    <div key={plan.id} className="plan-card">
+                        <h2 className="plan-name">{plan.name}</h2>
+                        <p className="plan-price">
+                            {plan.price} Rs / {plan.duration} days
+                        </p>
+                        <button className="subscribe-button" onClick={() => handleSubscribe(plan.id, index)}>
                             Subscribe
                         </button>
                     </div>
@@ -80,9 +78,9 @@ export default function PlansPage() {
             </div>
 
             {message && (
-                <div className="mt-6 p-4 bg-gray-50 border rounded-xl shadow-md text-center w-full max-w-md">
-                    <p className="text-lg text-black">{message}</p>
-                    {endDate && <p className="text-gray-600 mt-2">Subscription ends on: {endDate}</p>}
+                <div className="message-box">
+                    <p className="message-text">{message}</p>
+                    {endDate && <p className="end-date">Subscription ends on: {endDate}</p>}
                 </div>
             )}
         </div>

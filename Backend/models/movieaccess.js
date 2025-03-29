@@ -1,5 +1,5 @@
 import pool from "../config/db.js";
-
+import Genres from "./Genres.js";
 
 const MovieAccess = {
 
@@ -55,12 +55,105 @@ const MovieAccess = {
                 console.error('Error finding movie by movie_id:', error.message);
                 throw new Error("Failed to retrieve movie details");
             }
-        }
+        },
 
+
+        getRecommendedMovies: async ()=>
+        {
+            try
+            {   
+                const [rows]=await pool.execute
+                (
+                    `SELECT top_picks.movie_id, m.title, m.release_year,m.duration,m.rating,m.source_link FROM top_picks INNER JOIN Movies m ON top_picks.movie_id=m.movie_id`
+                )
+
+                
+                await Promise.all
+                (
+                    rows.map
+                    (
+                        async (row) => 
+                        {
+                            row["genreArray"] = await Genres.getMovieGenresStrings(row.movie_id);
+                            console.log(row)
+                        }
+                    )
+                );
+
+                return rows
+                
+            }
+            catch (error)
+            {
+
+            }
+        },
+
+
+        addToWatchHistory: async (user_id, movie_id) => {
+            try {
+                const [existing] = await pool.execute(
+                    `SELECT * FROM Watch_History WHERE user_id = ? AND movie_id = ?`,
+                    [user_id, movie_id]
+                );
         
-
-
-        // recomended movies
+                if (existing.length > 0) {
+                    const [result] = await pool.execute(
+                        `UPDATE Watch_History SET watched_on = CURRENT_TIMESTAMP WHERE user_id = ? AND movie_id = ?`,
+                        [user_id, movie_id]
+                    );
+        
+                    if (result.affectedRows > 0) {
+                        // Fetch the updated row explicitly
+                        const [updatedRow] = await pool.execute(
+                            `SELECT * FROM Watch_History WHERE user_id = ? AND movie_id = ?`,
+                            [user_id, movie_id]
+                        );
+                        return updatedRow[0];  // Return the updated row
+                    } else {
+                        throw new Error("Failed to update watch history");
+                    }
+                } 
+                else 
+                {
+                    const [result] = await pool.execute(
+                        `INSERT INTO Watch_History (user_id, movie_id, watched_on) VALUES (?, ?, CURRENT_TIMESTAMP)`,
+                        [user_id, movie_id]
+                    );
+        
+                    if (result.affectedRows > 0) {
+                        // Fetch the newly inserted row
+                        const [insertedRow] = await pool.execute(
+                            `SELECT * FROM Watch_History WHERE user_id = ? AND movie_id = ?`, // Assuming there's an 'id' column
+                            [user_id,movie_id]
+                        );
+                        return insertedRow[0];
+                    } else {
+                        throw new Error("Failed to add to watch history");
+                    }
+                }
+            } catch (error) {
+                console.error("Error adding to watch history:", error);
+                throw error;
+            }
+        },
+        
+        fetchWatchHistory: async (user_id)=>{
+            try
+            {
+                const [rows] = await pool.execute
+                (
+                    `SELECT * FROM Watch_History Inner Join Movies ON Watch_History.movie_id=Movies.movie_id WHERE user_id = ?`,
+                    [user_id]
+                )
+                return rows;
+            }
+            catch (error)
+            {
+                console.error('Error fetching watch history:', error);
+                throw error;
+            }
+        }
 
 
         

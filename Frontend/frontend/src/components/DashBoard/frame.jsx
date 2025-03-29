@@ -83,19 +83,65 @@ const YouTubeEmbed = () =>
 
 
 
-    useEffect(() => {
-        const storedLink = sessionStorage.getItem("videoLink");
-        const movieObject = sessionStorage.getItem("thisMovie");
+    useEffect(() => 
+    { const doWork =  async () => 
+        {
+            const storedLink = sessionStorage.getItem("videoLink");
+            const movieObject = sessionStorage.getItem("thisMovie");
 
-        if (storedLink) setVideoLink(storedLink);
-        if (movieObject) {
-            try {
-                const movieData = JSON.parse(movieObject);
-                setPresentMovie(movieData);
-            } catch (error) {
-                console.error("Error parsing movie object", error);
+            if (storedLink) setVideoLink(storedLink);
+            if (movieObject) 
+            {
+                try {
+                    const movieData = JSON.parse(movieObject);
+                    setPresentMovie(movieData);
+                } catch (error) {
+                    console.error("Error parsing movie object", error);
+                }
             }
+
+            //  add to movieList
+
+                let user = localStorage.getItem("user");
+                if (!user) {
+                    setMessage("User not logged in!");
+                    setOpenSnackbar(true);
+                    return;
+                }
+                user = JSON.parse(user);
+
+                const movieData = JSON.parse(movieObject);
+
+
+
+                try 
+                {
+                    const response = await fetch("http://localhost:3000/movieaccess/addtowatchhistory", {
+                        method: "POST",
+                        headers: 
+                        {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify({ user_id: user?.user_id, movie_id: movieData?.movie_id })
+                    });
+
+                    const data = await response.json();
+                    if (data?.message) {
+                        console.log(data.message);
+                    }
+                } 
+                catch (error) 
+                {
+                    console.error("Error adding to movie list:", error);
+                }
+        
+
         }
+
+        doWork()
+
+
     }, []);
 
     //-------------------------------------------------------------------------------------------------------

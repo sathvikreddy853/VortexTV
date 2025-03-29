@@ -22,8 +22,8 @@ import Searchbar from "./components/DashBoard/searchbar";
 import UpgradePage from "./components/DashBoard/upgrade";
 import ReviewPage from "./components/DashBoard/reviewpage";
 import MyReviews from "./components/DashBoard/myratings";
-import GnereFilter from "./components/DashBoard/gnerefilter";
 import GenreFilter from "./components/DashBoard/gnerefilter";
+import WatchHistory from "./components/DashBoard/watchHistory";
 const UnrestrictedLayout = () => {
     return (
         <div>
@@ -91,13 +91,18 @@ const router = createBrowserRouter([
                 <Outlet />
             </SecurityLayer>
         ),
-        children: [
+        children: 
+        [
             { index: true, element: <MyReviews /> 
             
             },
             {
                 path: "genrefilterpage",
                 element: <GenreFilter />,
+            }
+            ,{
+                path: "watchhistory",
+                element: <WatchHistory/>,
             }
         ],
     }

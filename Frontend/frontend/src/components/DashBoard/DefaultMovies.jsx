@@ -1,26 +1,85 @@
-import React from "react";
-import MovieCard from "./moviecard"; // Import your movie card component
+// Recommendations.jsx
+import React, { useState, useEffect } from 'react';
+import './CSS/Recommendations.css';
+import RecommendationCard from './smallcomponents/recommendationcard';
 
-const DefaultMovies = () => {
+const fakeMovies = [
+  // ... (Your fakeMovies array remains the same)
+];
 
-    console.log("here in default movies")
+const Recommendations = () => {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true); // Start with loading as true
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:3000/movieaccess/getrecommendations',
+          {
+            method: 'GET',
+            headers:{
+              "content-type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            }
+          }
+        );
+        if (!response.ok) 
+        {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        setMovies(data.recommendedMovies);
+        setLoading(false); // Set loading to false after successful fetch
+
+      } 
+      catch (err) {
+        setError(err);
+        setLoading(false); // Set loading to false even on error
+      }
+    };
+
+    fetchMovies();
+  }, []);
+
+
+  if (loading) {
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold text-center mb-4">Welcome to the Movies Section</h1>
-            <p className="text-center mb-6">Explore the latest movies here!</p>
-
-            <div 
-                // chatgpt suggested to use grid instead of flex ( but geneerally not preffere  if any one found the way with flex le us use it )
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 overflow-y-auto"
-                style={{ maxHeight: "80vh", scrollbarWidth: "thin", scrollbarColor: "#888 #222" }}
-            >
-                {/* Render 20 movie cards */}
-                {Array.from({ length: 40 }).map((current, index) => (
-                    <MovieCard key={index} link="https://www.youtube.com/watch?v=-UbZQzeQvFw"/>
-                ))}
-            </div>
-        </div>
+      <div className="recommendations-container">
+        <div className="loading">Loading recommendations...</div>
+      </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="recommendations-container">
+        <div className="error">Error: {error.message}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="recommendations-container">
+      <h2 className="recommendations-title">Recommended Movies</h2>
+      <div className="movies-grid">
+        {
+          movies.length>0 ?movies.map
+        (
+            (movie) =>  (
+            <RecommendationCard key={movie.movie_id} movieInfo={movie} link={movie.source_link} />
+          )  
+        ):
+        (
+          <div className="no-movies">No movies found.</div>
+        )
+      }
+      </div>
+    </div>
+  );
 };
 
-export default DefaultMovies;
+export default Recommendations;

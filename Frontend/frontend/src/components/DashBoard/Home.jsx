@@ -17,7 +17,7 @@ const Home = () => {
                 <button
                     onClick={toggleSidebar}
                     className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors duration-200 text-2xl">
-                    ✕
+                    ☰
                 </button>
                 <h2 className="text-3xl font-bold mb-6 text-center tracking-wide">Dashboard</h2>
 
@@ -30,6 +30,7 @@ const Home = () => {
                     <NavLink to ="/dashboard/upgrade" label="Upgrade" location={location} />
                     <NavLink to="/usr" label="My Reviews" location={location} />
                     <NavLink to ="/usr/genrefilterpage" label="Genre Filter" location={location} />
+                    <NavLink to ="/usr/watchhistory" label="Watch History" location={location} />
                     </nav>
             </div>
 

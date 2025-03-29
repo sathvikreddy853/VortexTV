@@ -1,0 +1,48 @@
+/* RecommendationCard.css */
+
+.recommendation-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.recommendation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.movie-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.movie-year,
+.movie-duration,
+.movie-rating {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.movie-genres {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.movie-genre {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin: 5px;
+    font-size: 0.9em;
+}
