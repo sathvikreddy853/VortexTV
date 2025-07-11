@@ -18,7 +18,7 @@ VortexTV is a movie streaming web application developed as a group project for t
 - [vhemanth06](https://github.com/vhemanth06)
 - [sathvikreddy853](https://github.com/sathvikreddy853)
 - [aditya](https://github.com/Adityanath-madishetti)
-- [Ritvik11022]()
+- [Ritvik11022](https://github.com/Rithvik11022)
 - [akshay402git](https://github.com/akshay402git)
 
 ## Tech Stack
